@@ -2,18 +2,18 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSiteSettings } from '../../contexts/SiteSettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  LayoutDashboard, 
-  Newspaper, 
-  School, 
-  Users, 
-  Trophy, 
-  Activity, 
-  Building2, 
-  ClipboardList, 
-  GraduationCap, 
-  Calendar, 
-  UserCog, 
+import {
+  LayoutDashboard,
+  Newspaper,
+  School,
+  Users,
+  Trophy,
+  Activity,
+  Building2,
+  ClipboardList,
+  GraduationCap,
+  Calendar,
+  UserCog,
   LogOut,
   ChevronLeft,
   Menu,
@@ -55,12 +55,12 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       {/* Overlay mobile */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden" 
-            onClick={onClose} 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            onClick={onClose}
           />
         )}
       </AnimatePresence>
@@ -74,7 +74,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
               <img src={logoUrl} alt={schoolName} className="w-10 h-10 rounded-xl object-contain shadow-lg group-hover:scale-110 transition-transform" />
             ) : (
               <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <span className="text-white font-bold text-lg">MI</span>
+                <span className="text-white font-bold text-lg">MIS</span>
               </div>
             )}
             <div>
@@ -89,17 +89,16 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           {menuItems.map((item, i) => {
             const Icon = item.icon;
             const active = isActive(item.path);
-            
+
             return (
               <Link
                 key={i}
                 to={item.path}
                 onClick={onClose}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group ${
-                  active
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group ${active
                     ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
                     : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                }`}
+                  }`}
               >
                 <Icon className={`w-5 h-5 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110'}`} />
                 <span className="font-medium">{item.label}</span>
@@ -118,9 +117,9 @@ const AdminSidebar = ({ isOpen, onClose }) => {
               <p className="text-sm text-white font-semibold truncate">{user?.name}</p>
               <p className="text-[10px] text-gray-500 truncate">{user?.email}</p>
             </div>
-            <button 
-              onClick={logout} 
-              className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all" 
+            <button
+              onClick={logout}
+              className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
               title="Logout"
             >
               <LogOut className="w-5 h-5" />
