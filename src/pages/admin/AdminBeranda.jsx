@@ -4,7 +4,7 @@ import { useSiteSettings } from '../../contexts/SiteSettingsContext';
 import { Save, Upload, Plus, Trash2, Eye, EyeOff, Image, Type, BarChart3, Megaphone, Sparkles, RefreshCw, ChevronDown, ChevronUp, GripVertical, Shield, Building2, UserCircle } from 'lucide-react';
 import MediaPickerModal from '../../components/common/MediaPickerModal';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
 const ICON_OPTIONS = [
   'GraduationCap', 'Users', 'Calendar', 'Trophy', 'BookOpen', 'Heart', 'ShieldCheck', 'Star', 'Award', 'Target'

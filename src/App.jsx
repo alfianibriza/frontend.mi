@@ -13,7 +13,7 @@ import AdminSidebar from './components/layout/AdminSidebar';
 import ProtectedRoute from './components/ProtectedRoute';
 import MediaPickerModal from './components/common/MediaPickerModal';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
 
 // Public Pages

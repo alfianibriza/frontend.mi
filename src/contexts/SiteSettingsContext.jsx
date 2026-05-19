@@ -13,7 +13,7 @@ import { homeSettingApi } from '../api';
 
 const SiteSettingsContext = createContext(null);
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
 export const SiteSettingsProvider = ({ children }) => {
   const [logoData, setLogoData] = useState({

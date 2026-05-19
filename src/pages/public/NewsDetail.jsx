@@ -6,7 +6,7 @@ const NewsDetail = () => {
   const { slug } = useParams();
   const [news, setNews] = useState(null);
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+  const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
   useEffect(() => {
     newsApi.getBySlug(slug).then(res => setNews(res.data.data)).catch(() => {}).finally(() => setLoading(false));

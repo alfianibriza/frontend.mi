@@ -20,7 +20,9 @@
 
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Konfigurasi dinamis: Production = API Hostinger, Development = localhost API
+const isProd = import.meta.env.PROD;
+const API_URL = import.meta.env.VITE_API_URL || (isProd ? 'https://api.mialghazali.sch.id/api' : 'http://localhost:5000/api');
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
