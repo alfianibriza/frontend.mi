@@ -39,10 +39,10 @@ const Home = () => {
   const stats = homeSettings?.stats?.is_active !== false && homeSettings?.stats?.content?.length
     ? homeSettings.stats.content
     : [
-      { label: 'Siswa Aktif', value: '320+', icon: 'GraduationCap', color: 'bg-blue-500' },
-      { label: 'Tenaga Pengajar', value: '25+', icon: 'Users', color: 'bg-green-500' },
-      { label: 'Tahun Berdiri', value: '20+', icon: 'Calendar', color: 'bg-amber-500' },
-      { label: 'Prestasi Siswa', value: '50+', icon: 'Trophy', color: 'bg-purple-500' },
+      { label: 'Murid Aktif', value: '320+', icon: 'GraduationCap', color: 'bg-blue-500' },
+      { label: 'PTK', value: '25+', icon: 'Users', color: 'bg-green-500' },
+      { label: 'Usia MI', value: '20+', icon: 'Calendar', color: 'bg-amber-500' },
+      { label: 'Prestasi', value: '50+', icon: 'Trophy', color: 'bg-purple-500' },
     ];
 
   const programData = homeSettings?.programs?.is_active !== false && homeSettings?.programs?.content
@@ -53,7 +53,7 @@ const Home = () => {
       items: [
         { title: "Tahfidz Al-Qur'an", desc: "Program hafalan Al-Qur'an dengan metode yang menyenangkan bagi anak-anak.", icon: 'BookOpen', color: 'text-emerald-600', bg: 'bg-emerald-50' },
         { title: 'Karakter Islami', desc: 'Pembentukan adab dan akhlak mulia berlandaskan nilai-nilai Al-Ghazali.', icon: 'Heart', color: 'text-rose-600', bg: 'bg-rose-50' },
-        { title: 'Kurikulum Merdeka', desc: 'Penerapan kurikulum terbaru yang fokus pada pengembangan potensi minat bakat.', icon: 'ShieldCheck', color: 'text-sky-600', bg: 'bg-sky-50' }
+        { title: 'Kurikulum Cinta', desc: 'Penerapan kurikulum terbaru yang fokus pada pengembangan potensi minat bakat.', icon: 'ShieldCheck', color: 'text-sky-600', bg: 'bg-sky-50' }
       ]
     };
 
@@ -73,7 +73,7 @@ const Home = () => {
   const greetingData = homeSettings?.headmaster_greeting?.content || {
     title: 'Membentuk Karakter Unggul & Beradab',
     text: 'Assalamualaikum Wr. Wb. MI Al-Ghazali terus berkomitmen untuk memberikan pendidikan terbaik bagi putra-putri bangsa dengan mengintegrasikan nilai-nilai keislaman dan kurikulum modern.',
-    name: 'Ust. H. Ahmad Fauzi, M.Pd',
+    name: 'K. Moh. Bakri, S.Ag.',
     role: 'Kepala Madrasah',
     image_url: 'https://images.unsplash.com/photo-1577896851231-70ef1469759e?q=80&w=2070&auto=format&fit=crop',
     experience: '20+',
