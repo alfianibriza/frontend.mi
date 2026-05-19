@@ -74,7 +74,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
               <img src={logoUrl} alt={schoolName} className="w-10 h-10 rounded-xl object-contain shadow-lg group-hover:scale-110 transition-transform" />
             ) : (
               <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <span className="text-white font-bold text-lg">MIS</span>
+                <span className="text-white font-bold text-lg">MI</span>
               </div>
             )}
             <div>
@@ -96,8 +96,8 @@ const AdminSidebar = ({ isOpen, onClose }) => {
                 to={item.path}
                 onClick={onClose}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group ${active
-                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
-                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                  ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
+                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
                   }`}
               >
                 <Icon className={`w-5 h-5 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110'}`} />
