@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import { Autoplay, Pagination } from 'swiper/modules';
 import {
   GraduationCap, Users, Calendar, Trophy, ArrowRight, Star, BookOpen, Heart,
   ShieldCheck, ChevronRight, Newspaper, Award, Target
@@ -11,7 +11,6 @@ import { newsApi, profileApi, homeSettingApi } from '../../api';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 
 // Map icon string ke komponen
 const ICON_MAP = { GraduationCap, Users, Calendar, Trophy, BookOpen, Heart, ShieldCheck, Star, Award, Target };
@@ -87,10 +86,9 @@ const Home = () => {
       {/* Hero Slider */}
       <section className="relative h-[85vh] lg:h-screen">
         <Swiper
-          modules={[Autoplay, Pagination, Navigation]}
+          modules={[Autoplay, Pagination]}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
           pagination={{ clickable: true }}
-          navigation={true}
           loop={true}
           className="h-full w-full"
         >
