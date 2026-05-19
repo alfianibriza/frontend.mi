@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
-import { 
-  GraduationCap, Users, Calendar, Trophy, ArrowRight, Star, BookOpen, Heart, 
+import {
+  GraduationCap, Users, Calendar, Trophy, ArrowRight, Star, BookOpen, Heart,
   ShieldCheck, ChevronRight, Newspaper, Award, Target
 } from 'lucide-react';
 import { newsApi, profileApi, homeSettingApi } from '../../api';
@@ -23,48 +23,48 @@ const Home = () => {
   const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
   useEffect(() => {
-    newsApi.getAll({ limit: 3 }).then(res => setLatestNews(res.data.data)).catch(() => {});
-    homeSettingApi.getAll().then(res => setHomeSettings(res.data.data)).catch(() => {});
+    newsApi.getAll({ limit: 3 }).then(res => setLatestNews(res.data.data)).catch(() => { });
+    homeSettingApi.getAll().then(res => setHomeSettings(res.data.data)).catch(() => { });
   }, []);
 
   // Fallback data jika belum ada setting
   const slides = homeSettings?.hero_slides?.is_active !== false && homeSettings?.hero_slides?.content?.length
     ? homeSettings.hero_slides.content
     : [
-        { image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=2071&auto=format&fit=crop', title: 'Membangun Generasi Rabbani', subtitle: 'MI Al-Ghazali berkomitmen mencetak generasi yang cerdas dan berakhlakul karimah.' },
-        { image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2132&auto=format&fit=crop', title: 'Lingkungan Belajar Nyaman', subtitle: 'Fasilitas modern yang mendukung kreativitas dan kenyamanan siswa dalam belajar.' },
-        { image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop', title: 'Eksplorasi Bakat & Minat', subtitle: 'Berbagai kegiatan ekstrakurikuler untuk mengembangkan potensi setiap anak.' }
-      ];
+      { image: 'https://scontent.fsub8-1.fna.fbcdn.net/v/t39.30808-6/698783644_3530569720423316_6896522779560118604_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeFwrxSN1QMGbNzW34ax4kJ0-Ed3vbWRK5H4R3e9tZErkeHT-jttw2U9LStY6hBW2wGTogFepvG12rlzN4yQ-PzF&_nc_ohc=N6-ScvEXH3gQ7kNvwGnvbfq&_nc_oc=Adr58iS2Cjsf0HRwfgBOpZBS2abSJahSe3-OhTaA0lwZk00cISVFMqB5C-_jLpnFcMU&_nc_zt=23&_nc_ht=scontent.fsub8-1.fna&_nc_gid=tSlxfL14vuSYR88gl0zIrA&_nc_ss=7b2a8&oh=00_Af6olvpt1qGkBbt-fDMnt4dJIF9nwjcHiSEblvpjx4Gv1g&oe=6A11D46C', title: 'Membangun Generasi Rabbani', subtitle: 'MI Al-Ghazali berkomitmen mencetak generasi yang cerdas dan berakhlakul karimah.' },
+      { image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2132&auto=format&fit=crop', title: 'Lingkungan Belajar Nyaman', subtitle: 'Fasilitas modern yang mendukung kreativitas dan kenyamanan siswa dalam belajar.' },
+      { image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop', title: 'Eksplorasi Bakat & Minat', subtitle: 'Berbagai kegiatan ekstrakurikuler untuk mengembangkan potensi setiap anak.' }
+    ];
 
   const stats = homeSettings?.stats?.is_active !== false && homeSettings?.stats?.content?.length
     ? homeSettings.stats.content
     : [
-        { label: 'Siswa Aktif', value: '320+', icon: 'GraduationCap', color: 'bg-blue-500' },
-        { label: 'Tenaga Pengajar', value: '25+', icon: 'Users', color: 'bg-green-500' },
-        { label: 'Tahun Berdiri', value: '20+', icon: 'Calendar', color: 'bg-amber-500' },
-        { label: 'Prestasi Siswa', value: '50+', icon: 'Trophy', color: 'bg-purple-500' },
-      ];
+      { label: 'Siswa Aktif', value: '320+', icon: 'GraduationCap', color: 'bg-blue-500' },
+      { label: 'Tenaga Pengajar', value: '25+', icon: 'Users', color: 'bg-green-500' },
+      { label: 'Tahun Berdiri', value: '20+', icon: 'Calendar', color: 'bg-amber-500' },
+      { label: 'Prestasi Siswa', value: '50+', icon: 'Trophy', color: 'bg-purple-500' },
+    ];
 
   const programData = homeSettings?.programs?.is_active !== false && homeSettings?.programs?.content
     ? homeSettings.programs.content
     : {
-        section_title: 'Program Unggulan Kami',
-        section_subtitle: 'Menyediakan berbagai program inovatif untuk mendukung perkembangan akademik dan spiritual siswa.',
-        items: [
-          { title: "Tahfidz Al-Qur'an", desc: "Program hafalan Al-Qur'an dengan metode yang menyenangkan bagi anak-anak.", icon: 'BookOpen', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-          { title: 'Karakter Islami', desc: 'Pembentukan adab dan akhlak mulia berlandaskan nilai-nilai Al-Ghazali.', icon: 'Heart', color: 'text-rose-600', bg: 'bg-rose-50' },
-          { title: 'Kurikulum Merdeka', desc: 'Penerapan kurikulum terbaru yang fokus pada pengembangan potensi minat bakat.', icon: 'ShieldCheck', color: 'text-sky-600', bg: 'bg-sky-50' }
-        ]
-      };
+      section_title: 'Program Unggulan Kami',
+      section_subtitle: 'Menyediakan berbagai program inovatif untuk mendukung perkembangan akademik dan spiritual siswa.',
+      items: [
+        { title: "Tahfidz Al-Qur'an", desc: "Program hafalan Al-Qur'an dengan metode yang menyenangkan bagi anak-anak.", icon: 'BookOpen', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+        { title: 'Karakter Islami', desc: 'Pembentukan adab dan akhlak mulia berlandaskan nilai-nilai Al-Ghazali.', icon: 'Heart', color: 'text-rose-600', bg: 'bg-rose-50' },
+        { title: 'Kurikulum Merdeka', desc: 'Penerapan kurikulum terbaru yang fokus pada pengembangan potensi minat bakat.', icon: 'ShieldCheck', color: 'text-sky-600', bg: 'bg-sky-50' }
+      ]
+    };
 
   const ctaData = homeSettings?.cta?.is_active !== false && homeSettings?.cta?.content
     ? homeSettings.cta.content
     : {
-        title: 'Mulai Perjalanan Pendidikan Terbaik Putra-Putri Anda',
-        subtitle: 'Bergabunglah bersama keluarga besar MI Al-Ghazali dan berikan fondasi pendidikan yang kuat berbasis nilai Islam dan karakter unggul.',
-        primary_button: { text: 'Daftar Sekarang', link: '/pmb' },
-        secondary_button: { text: 'Lihat Fasilitas', link: '/fasilitas' }
-      };
+      title: 'Mulai Perjalanan Pendidikan Terbaik Putra-Putri Anda',
+      subtitle: 'Bergabunglah bersama keluarga besar MI Al-Ghazali dan berikan fondasi pendidikan yang kuat berbasis nilai Islam dan karakter unggul.',
+      primary_button: { text: 'Daftar Sekarang', link: '/pmb' },
+      secondary_button: { text: 'Lihat Fasilitas', link: '/fasilitas' }
+    };
 
   const announcement = homeSettings?.announcement?.is_active !== false && homeSettings?.announcement?.content
     ? homeSettings.announcement.content
