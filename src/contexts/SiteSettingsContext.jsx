@@ -79,15 +79,22 @@ export const SiteSettingsProvider = ({ children }) => {
     const existing = document.querySelectorAll("link[rel*='icon']");
     existing.forEach(el => el.remove());
 
+    // Get file extension to determine type
+    const ext = url.split('.').pop()?.toLowerCase();
+    const type = ext === 'ico' ? 'image/x-icon' : ext === 'svg' ? 'image/svg+xml' : 'image/png';
+    
+    // Add cache buster to force browser to reload the favicon
+    const urlWithCacheBuster = url.includes('?') ? `${url}&v=${new Date().getTime()}` : `${url}?v=${new Date().getTime()}`;
+
     const link = document.createElement('link');
     link.rel = 'icon';
-    link.type = 'image/png';
-    link.href = url;
+    link.type = type;
+    link.href = urlWithCacheBuster;
     document.head.appendChild(link);
 
     const appleLink = document.createElement('link');
     appleLink.rel = 'apple-touch-icon';
-    appleLink.href = url;
+    appleLink.href = urlWithCacheBuster;
     document.head.appendChild(appleLink);
   };
 
