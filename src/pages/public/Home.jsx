@@ -129,9 +129,9 @@ const Home = () => {
                           Daftar Sekarang
                           <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                        <Link to="/profil/sejarah" className="btn-secondary !bg-white/10 !text-white !border-white/20 backdrop-blur-md hover:!bg-white/20 !px-8 !py-4">
+                        {/* <Link to="/profil/sejarah" className="btn-secondary !bg-white/10 !text-white !border-white/20 backdrop-blur-md hover:!bg-white/20 !px-8 !py-4">
                           Kenali Kami
-                        </Link>
+                        </Link>*/}
                       </div>
                     </motion.div>
                   </div>

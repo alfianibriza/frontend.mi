@@ -229,22 +229,47 @@ const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editItem, setEditItem] = useState(null);
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'user' });
 
   const loadData = () => { userApi.getAll({ limit: 100 }).then(res => setUsers(res.data.data)).catch(() => {}).finally(() => setLoading(false)); };
   useEffect(() => { loadData(); }, []);
 
-  const handleDelete = async (id) => { if (confirm('Yakin?')) { try { await userApi.delete(id); loadData(); } catch {} } };
+  const handleDelete = async (id) => { if (confirm('Yakin ingin menghapus user ini?')) { try { await userApi.delete(id); loadData(); } catch {} } };
+
+  const openCreateModal = () => {
+    setEditItem(null);
+    setForm({ name: '', email: '', password: '', role: 'user' });
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (user) => {
+    setEditItem(user);
+    setForm({ name: user.name, email: user.email, password: '', role: user.role });
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditItem(null);
+    setForm({ name: '', email: '', password: '', role: 'user' });
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      await userApi.create(form);
-      setIsModalOpen(false);
-      setForm({ name: '', email: '', password: '', role: 'user' });
+      if (editItem) {
+        // Update: only send password if filled
+        const updateData = { name: form.name, email: form.email, role: form.role };
+        if (form.password) updateData.password = form.password;
+        await userApi.update(editItem.id, updateData);
+      } else {
+        await userApi.create(form);
+      }
+      closeModal();
       loadData();
     } catch (err) {
-      alert(err.response?.data?.message || 'Gagal menambahkan user');
+      alert(err.response?.data?.message || (editItem ? 'Gagal mengupdate user' : 'Gagal menambahkan user'));
     }
   };
 
@@ -252,30 +277,46 @@ const AdminUsers = () => {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2"><Users className="w-8 h-8 text-primary-600" /> Kelola Users</h1>
-        <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 flex items-center gap-2 font-medium">
+        <button onClick={openCreateModal} className="px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 flex items-center gap-2 font-medium">
           <Plus className="w-5 h-5" /> Tambah User
         </button>
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setIsModalOpen(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={closeModal}>
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-fade-in-up" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-800">Tambah User Baru</h2>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"><X className="w-5 h-5" /></button>
+              <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                {editItem ? (
+                  <><span className="text-primary-600 bg-primary-50 p-1.5 rounded-lg"><Edit className="w-4 h-4" /></span> Edit User</>
+                ) : (
+                  <><span className="text-primary-600 bg-primary-50 p-1.5 rounded-lg"><Plus className="w-4 h-4" /></span> Tambah User Baru</>
+                )}
+              </h2>
+              <button onClick={closeModal} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={handleSave} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
-                <input required className="input-field bg-gray-50" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                <input required className="input-field bg-gray-50" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Masukkan nama lengkap" />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-                <input required type="email" className="input-field bg-gray-50" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                <input required type="email" className="input-field bg-gray-50" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="contoh@email.com" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                <input required type="password" minLength={6} className="input-field bg-gray-50" value={form.password} onChange={e => setForm({...form, password: e.target.value})} />
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Password {editItem && <span className="text-xs text-gray-400 font-normal">(kosongkan jika tidak ingin mengubah)</span>}
+                </label>
+                <input 
+                  type="password" 
+                  minLength={form.password ? 6 : undefined}
+                  className="input-field bg-gray-50" 
+                  value={form.password} 
+                  onChange={e => setForm({...form, password: e.target.value})} 
+                  required={!editItem}
+                  placeholder={editItem ? '••••••••' : 'Minimal 6 karakter'}
+                />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Role</label>
@@ -285,8 +326,10 @@ const AdminUsers = () => {
                 </select>
               </div>
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 mt-2">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2 text-gray-600 hover:bg-gray-100 rounded-xl font-medium">Batal</button>
-                <button type="submit" className="px-5 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 font-medium shadow-md shadow-primary-600/20">Simpan</button>
+                <button type="button" onClick={closeModal} className="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl font-medium transition-colors">Batal</button>
+                <button type="submit" className="px-5 py-2.5 bg-primary-600 text-white rounded-xl hover:bg-primary-700 font-medium shadow-md shadow-primary-600/20 transition-all flex items-center gap-2">
+                  {editItem ? <><Check className="w-4 h-4" /> Update</> : <><Plus className="w-4 h-4" /> Simpan</>}
+                </button>
               </div>
             </form>
           </div>
@@ -299,13 +342,25 @@ const AdminUsers = () => {
             <thead><tr className="bg-gray-50 border-b"><th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">Nama</th><th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">Email</th><th className="px-4 py-3 text-left text-xs font-semibold text-gray-500">Role</th><th className="px-4 py-3 text-right text-xs font-semibold text-gray-500">Aksi</th></tr></thead>
             <tbody>
               {users.map(u => (
-                <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm">{u.name}</td>
-                  <td className="px-4 py-3 text-sm">{u.email}</td>
-                  <td className="px-4 py-3"><span className={`px-2 py-1 rounded-full text-xs font-medium ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}>{u.role}</span></td>
-                  <td className="px-4 py-3 text-right"><button onClick={() => handleDelete(u.id)} className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100"><Trash2 className="w-4 h-4" /></button></td>
+                <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-3 text-sm font-medium text-gray-800">{u.name}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">{u.email}</td>
+                  <td className="px-4 py-3"><span className={`px-2.5 py-1 rounded-full text-xs font-medium ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}>{u.role}</span></td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button onClick={() => openEditModal(u)} className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors" title="Edit user">
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => handleDelete(u.id)} className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" title="Hapus user">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
+              {users.length === 0 && (
+                <tr><td colSpan="4" className="px-4 py-10 text-center text-gray-400">Belum ada user.</td></tr>
+              )}
             </tbody>
           </table>
         </div>
