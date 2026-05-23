@@ -40,7 +40,7 @@ const Home = () => {
     : [
       { label: 'Murid Aktif', value: '320+', icon: 'GraduationCap', color: 'bg-blue-500' },
       { label: 'PTK', value: '25+', icon: 'Users', color: 'bg-green-500' },
-      { label: 'Usia MI', value: '20+', icon: 'Calendar', color: 'bg-amber-500' },
+      { label: 'Alumni Sukses', value: '1000+', icon: 'Calendar', color: 'bg-amber-500' },
       { label: 'Prestasi', value: '50+', icon: 'Trophy', color: 'bg-purple-500' },
     ];
 
