@@ -13,7 +13,7 @@ import { homeSettingApi } from '../api';
 
 const SiteSettingsContext = createContext(null);
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
 export const SiteSettingsProvider = ({ children }) => {
   const [logoData, setLogoData] = useState({
@@ -34,9 +34,9 @@ export const SiteSettingsProvider = ({ children }) => {
 
   const getFullUrl = (path) => {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
-    if (path.startsWith('/uploads')) return `${API_BASE}${path}`;
-    return path;
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    if (path.startsWith('/')) return `${API_BASE}${path}`;
+    return `${API_BASE}/${path}`;
   };
 
   const parseContent = (content) => {

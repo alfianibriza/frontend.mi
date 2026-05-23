@@ -10,7 +10,14 @@ import {
 } from 'lucide-react';
 import { mediaApi } from '../../api';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+
+const getFullUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('/')) return `${API_BASE}${url}`;
+  return `${API_BASE}/${url}`;
+};
 
 const MediaPickerModal = ({ isOpen, onClose, onSelect }) => {
   const [media, setMedia] = useState([]);
@@ -190,10 +197,13 @@ const MediaPickerModal = ({ isOpen, onClose, onSelect }) => {
                         }`}
                       >
                         <img 
-                          src={item.url.startsWith('/') ? `${API_BASE}${item.url}` : item.url} 
+                          src={getFullUrl(item.url)} 
                           alt={item.name} 
                           className="w-full h-full object-cover"
                           loading="lazy"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
                         />
                         
                         {selectedFile?.name === item.name && (
@@ -221,9 +231,12 @@ const MediaPickerModal = ({ isOpen, onClose, onSelect }) => {
                   <div className="p-4 flex-1 overflow-y-auto">
                     <div className="aspect-square rounded-xl bg-gray-100 overflow-hidden mb-4 border border-gray-200">
                       <img 
-                        src={selectedFile.url.startsWith('/') ? `${API_BASE}${selectedFile.url}` : selectedFile.url} 
+                        src={getFullUrl(selectedFile.url)} 
                         alt="Preview" 
                         className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
                       />
                     </div>
                     

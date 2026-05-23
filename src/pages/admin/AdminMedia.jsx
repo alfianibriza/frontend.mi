@@ -13,7 +13,14 @@ import {
 } from 'lucide-react';
 import { mediaApi } from '../../api';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+
+const getFullUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('/')) return `${API_BASE}${url}`;
+  return `${API_BASE}/${url}`;
+};
 
 const AdminMedia = () => {
   const [media, setMedia] = useState([]);
@@ -200,12 +207,22 @@ const AdminMedia = () => {
                     className={`group relative aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-colors ${selectedFile?.name === item.name ? 'border-primary-500' : 'border-transparent bg-gray-100 hover:border-primary-200'}`}
                   >
                     {item.name.match(/\.(jpeg|jpg|gif|png|webp)$/i) ? (
-                      <img 
-                        src={item.url.startsWith('/') ? `${API_BASE}${item.url}` : item.url} 
-                        alt={item.name} 
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
+                      <>
+                        <img 
+                          src={getFullUrl(item.url)} 
+                          alt={item.name} 
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="w-full h-full flex-col items-center justify-center text-gray-400 bg-gray-50" style={{ display: 'none' }}>
+                          <ImageIcon className="w-10 h-10 mb-2 opacity-50" />
+                          <span className="text-xs font-medium px-2 text-center break-all line-clamp-2">{item.name}</span>
+                        </div>
+                      </>
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-gray-50">
                         <ImageIcon className="w-10 h-10 mb-2 opacity-50" />
@@ -251,17 +268,27 @@ const AdminMedia = () => {
                   {/* Preview Image */}
                   <div className="aspect-square bg-gray-100 p-4 flex items-center justify-center border-b border-gray-100 relative group">
                     {selectedFile.name.match(/\.(jpeg|jpg|gif|png|webp)$/i) ? (
-                      <img 
-                        src={selectedFile.url.startsWith('/') ? `${API_BASE}${selectedFile.url}` : selectedFile.url} 
-                        alt={selectedFile.name} 
-                        className="max-w-full max-h-full object-contain drop-shadow-sm"
-                      />
+                      <>
+                        <img 
+                          src={getFullUrl(selectedFile.url)} 
+                          alt={selectedFile.name} 
+                          className="max-w-full max-h-full object-contain drop-shadow-sm"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="flex flex-col items-center justify-center text-gray-400" style={{ display: 'none' }}>
+                          <AlertCircle className="w-10 h-10 mb-2 text-red-300" />
+                          <span className="text-xs text-red-400">Gagal memuat gambar</span>
+                        </div>
+                      </>
                     ) : (
                       <ImageIcon className="w-20 h-20 text-gray-300" />
                     )}
                     
                     <a 
-                      href={selectedFile.url.startsWith('/') ? `${API_BASE}${selectedFile.url}` : selectedFile.url} 
+                      href={getFullUrl(selectedFile.url)} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur text-gray-700 hover:text-primary-600 rounded-lg shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"

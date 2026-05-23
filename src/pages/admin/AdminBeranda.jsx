@@ -4,7 +4,14 @@ import { useSiteSettings } from '../../contexts/SiteSettingsContext';
 import { Save, Upload, Plus, Trash2, Eye, EyeOff, Image, Type, BarChart3, Megaphone, Sparkles, RefreshCw, ChevronDown, ChevronUp, GripVertical, Shield, Building2, UserCircle } from 'lucide-react';
 import MediaPickerModal from '../../components/common/MediaPickerModal';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+
+const getFullUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('/')) return `${API_BASE}${url}`;
+  return `${API_BASE}/${url}`;
+};
 
 const ICON_OPTIONS = [
   'GraduationCap', 'Users', 'Calendar', 'Trophy', 'BookOpen', 'Heart', 'ShieldCheck', 'Star', 'Award', 'Target'
@@ -199,7 +206,10 @@ const AdminBeranda = () => {
                   <div className="flex items-center gap-4">
                     <div className="w-20 h-20 bg-white border-2 border-dashed border-gray-300 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0">
                       {settings.logo.content?.logo_url ? (
-                        <img src={settings.logo.content.logo_url.startsWith('/uploads') ? `${API_BASE}${settings.logo.content.logo_url}` : settings.logo.content.logo_url} alt="Logo" className="w-full h-full object-contain p-1" onError={e => { e.target.style.display = 'none'; e.target.nextSibling && (e.target.nextSibling.style.display = 'flex'); }} />
+                        <>
+                          <img src={getFullUrl(settings.logo.content.logo_url)} alt="Logo" className="w-full h-full object-contain p-1" onError={e => { e.target.style.display = 'none'; if(e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'block'; }} />
+                          <span className="text-red-400 text-[10px] text-center" style={{ display: 'none' }}>Error</span>
+                        </>
                       ) : (
                         <span className="text-gray-300 text-xs text-center">Belum ada<br />logo</span>
                       )}
@@ -227,7 +237,10 @@ const AdminBeranda = () => {
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 bg-white border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
                       {settings.logo.content?.favicon_url ? (
-                        <img src={settings.logo.content.favicon_url.startsWith('/uploads') ? `${API_BASE}${settings.logo.content.favicon_url}` : settings.logo.content.favicon_url} alt="Favicon" className="w-full h-full object-contain p-1" onError={e => { e.target.style.display = 'none'; }} />
+                        <>
+                          <img src={getFullUrl(settings.logo.content.favicon_url)} alt="Favicon" className="w-full h-full object-contain p-1" onError={e => { e.target.style.display = 'none'; if(e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'block'; }} />
+                          <span className="text-red-400 text-[10px] text-center" style={{ display: 'none' }}>Error</span>
+                        </>
                       ) : (
                         <span className="text-gray-300 text-[10px] text-center">Belum ada</span>
                       )}
@@ -315,7 +328,7 @@ const AdminBeranda = () => {
                 <div className="flex items-center gap-4">
                   <div className="w-24 h-24 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden border border-gray-200 flex-shrink-0">
                     {settings.headmaster_greeting.content?.image_url ? (
-                      <img src={settings.headmaster_greeting.content.image_url.startsWith('/uploads') ? `${API_BASE}${settings.headmaster_greeting.content.image_url}` : settings.headmaster_greeting.content.image_url} alt="Foto Kepala Madrasah" className="w-full h-full object-cover" />
+                      <img src={getFullUrl(settings.headmaster_greeting.content.image_url)} alt="Foto Kepala Madrasah" className="w-full h-full object-cover" onError={e => e.target.style.display = 'none'} />
                     ) : (
                       <span className="text-gray-400 text-xs text-center">Belum ada<br />foto</span>
                     )}
@@ -394,7 +407,7 @@ const AdminBeranda = () => {
                         </button>
                       </div>
                       {slide.image && (
-                        <img src={slide.image.startsWith('/uploads') ? `${API_BASE}${slide.image}` : slide.image} alt="" className="mt-2 h-24 rounded-lg object-cover" onError={e => e.target.style.display = 'none'} />
+                        <img src={getFullUrl(slide.image)} alt="" className="mt-2 h-24 rounded-lg object-cover" onError={e => e.target.style.display = 'none'} />
                       )}
                     </div>
                   </div>
