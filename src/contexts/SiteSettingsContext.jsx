@@ -34,9 +34,10 @@ export const SiteSettingsProvider = ({ children }) => {
 
   const getFullUrl = (path) => {
     if (!path) return '';
-    if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    if (path.startsWith('/')) return `${API_BASE}${path}`;
-    return `${API_BASE}/${path}`;
+    const normalizedPath = path.replace(/\\/g, '/');
+    if (normalizedPath.startsWith('http://') || normalizedPath.startsWith('https://')) return normalizedPath;
+    if (normalizedPath.startsWith('/')) return `${API_BASE}${normalizedPath}`;
+    return `${API_BASE}/${normalizedPath}`;
   };
 
   const parseContent = (content) => {
@@ -79,15 +80,17 @@ export const SiteSettingsProvider = ({ children }) => {
     const existing = document.querySelectorAll("link[rel*='icon']");
     existing.forEach(el => el.remove());
 
+    // Add cache buster to force browser to update favicon
+    const faviconUrl = url + (url.includes('?') ? '&' : '?') + 'v=' + new Date().getTime();
+
     const link = document.createElement('link');
     link.rel = 'icon';
-    link.type = 'image/png';
-    link.href = url;
+    link.href = faviconUrl;
     document.head.appendChild(link);
 
     const appleLink = document.createElement('link');
     appleLink.rel = 'apple-touch-icon';
-    appleLink.href = url;
+    appleLink.href = faviconUrl;
     document.head.appendChild(appleLink);
   };
 
