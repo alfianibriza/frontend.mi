@@ -68,9 +68,9 @@ const Navbar = () => {
                 <span className="text-white font-bold text-lg">MI</span>
               </div>
             )}
-            <div className="hidden sm:block">
-              <h1 className={`text-lg font-bold leading-tight transition-colors ${scrolled ? 'text-gray-800' : 'text-gray-900 lg:text-white'}`}>{schoolName}</h1>
-              <p className={`text-xs -mt-0.5 transition-colors ${scrolled ? 'text-primary-600' : 'text-primary-700 lg:text-primary-200'}`}>{schoolSubtitle}</p>
+            <div>
+              <h1 className={`text-sm sm:text-lg font-bold leading-tight transition-colors ${scrolled ? 'text-gray-800' : 'text-gray-900 lg:text-white'}`}>{schoolName}</h1>
+              <p className={`text-[10px] sm:text-xs -mt-0.5 transition-colors ${scrolled ? 'text-primary-600' : 'text-primary-700 lg:text-primary-200'}`}>{schoolSubtitle}</p>
             </div>
           </Link>
 
