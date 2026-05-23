@@ -55,9 +55,14 @@ export const SiteSettingsProvider = ({ children }) => {
       // Load logo data
       if (data.logo) {
         const content = parseContent(data.logo.content);
+        // Use logo_url as favicon if favicon_url is not set
+        const faviconSrc = (content.favicon_url && content.favicon_url.trim()) || content.logo_url;
+        const logoSrc = content.logo_url;
         setLogoData(prev => ({ ...prev, ...content }));
-        if (content.favicon_url || content.logo_url) {
-          updateFavicon(getFullUrl(content.favicon_url || content.logo_url));
+        if (faviconSrc) {
+          updateFavicon(getFullUrl(faviconSrc));
+        } else if (logoSrc) {
+          updateFavicon(getFullUrl(logoSrc));
         }
       }
 
@@ -77,20 +82,52 @@ export const SiteSettingsProvider = ({ children }) => {
 
   const updateFavicon = (url) => {
     if (!url) return;
-    const existing = document.querySelectorAll("link[rel*='icon']");
-    existing.forEach(el => el.remove());
+    
+    // Remove ALL existing favicon-related links
+    const selectors = [
+      "link[rel='icon']",
+      "link[rel='shortcut icon']",
+      "link[rel='apple-touch-icon']",
+      "link[rel*='icon']"
+    ];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => el.remove());
+    });
 
-    // Add cache buster to force browser to update favicon
-    const faviconUrl = url + (url.includes('?') ? '&' : '?') + 'v=' + new Date().getTime();
+    // Determine MIME type from URL
+    const getIconType = (iconUrl) => {
+      const lower = iconUrl.toLowerCase().split('?')[0];
+      if (lower.endsWith('.svg')) return 'image/svg+xml';
+      if (lower.endsWith('.ico')) return 'image/x-icon';
+      if (lower.endsWith('.png')) return 'image/png';
+      if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg';
+      if (lower.endsWith('.webp')) return 'image/webp';
+      return 'image/png'; // default
+    };
 
+    // Cache buster to force browser refresh
+    const cacheBuster = 'v=' + Date.now();
+    const faviconHref = url + (url.includes('?') ? '&' : '?') + cacheBuster;
+    const iconType = getIconType(url);
+
+    // Standard favicon (rel="icon")
     const link = document.createElement('link');
     link.rel = 'icon';
-    link.href = faviconUrl;
+    link.type = iconType;
+    link.href = faviconHref;
     document.head.appendChild(link);
 
+    // Legacy shortcut icon for older browsers
+    const shortcutLink = document.createElement('link');
+    shortcutLink.rel = 'shortcut icon';
+    shortcutLink.type = iconType;
+    shortcutLink.href = faviconHref;
+    document.head.appendChild(shortcutLink);
+
+    // Apple touch icon
     const appleLink = document.createElement('link');
     appleLink.rel = 'apple-touch-icon';
-    appleLink.href = faviconUrl;
+    appleLink.href = faviconHref;
     document.head.appendChild(appleLink);
   };
 
