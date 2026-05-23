@@ -138,7 +138,7 @@ export const useSiteSettings = () => {
       phone: '',
       email: '',
       motto: '',
-      refreshSettings: () => {}
+      refreshSettings: () => { }
     };
   }
   return context;
