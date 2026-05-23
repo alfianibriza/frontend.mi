@@ -117,11 +117,8 @@ const AdminBeranda = () => {
 
   const handleMediaSelect = (url) => {
     if (mediaPickerTarget === 'logo_url') {
-      updateContent('logo', { ...settings.logo.content, logo_url: url });
+      updateContent('logo', { ...settings.logo.content, logo_url: url, favicon_url: url });
       showToast('Logo berhasil dipilih!');
-    } else if (mediaPickerTarget === 'favicon_url') {
-      updateContent('logo', { ...settings.logo.content, favicon_url: url });
-      showToast('Favicon berhasil dipilih!');
     } else if (mediaPickerTarget === 'greeting_image') {
       updateContent('headmaster_greeting', { ...settings.headmaster_greeting.content, image_url: url });
       showToast('Foto sambutan berhasil dipilih!');
@@ -199,10 +196,10 @@ const AdminBeranda = () => {
           {settings.logo && (
             <SectionCard title="Atur Logo Madrasah" icon={Shield} defaultOpen>
               <div className="space-y-5">
-                {/* Logo Utama */}
+                {/* Logo Utama & Favicon */}
                 <div className="border border-gray-200 rounded-xl p-4 bg-gray-50 space-y-3">
-                  <h4 className="text-sm font-bold text-gray-700">Logo Utama Website</h4>
-                  <p className="text-xs text-gray-500">Logo ini akan tampil di Navbar, Footer, dan Sidebar Admin.</p>
+                  <h4 className="text-sm font-bold text-gray-700">Logo Website & Tab Browser</h4>
+                  <p className="text-xs text-gray-500">Satu logo ini akan otomatis tampil di Navbar, Footer, Sidebar Admin, dan sebagai ikon tab browser (favicon).</p>
                   <div className="flex items-center gap-4">
                     <div className="w-20 h-20 bg-white border-2 border-dashed border-gray-300 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0">
                       {settings.logo.content?.logo_url ? (
@@ -216,45 +213,14 @@ const AdminBeranda = () => {
                     </div>
                     <div className="flex-1 space-y-2">
                       <div className="flex flex-col sm:flex-row gap-2">
-                        <input className="input-field text-sm py-2" value={settings.logo.content?.logo_url || ''} onChange={e => updateContent('logo', { ...settings.logo.content, logo_url: e.target.value })} placeholder="Masukkan URL logo atau pilih..." />
+                        <input className="input-field text-sm py-2" value={settings.logo.content?.logo_url || ''} onChange={e => updateContent('logo', { ...settings.logo.content, logo_url: e.target.value, favicon_url: e.target.value })} placeholder="Masukkan URL logo atau pilih..." />
                         <button onClick={() => { setMediaPickerTarget('logo_url'); setIsMediaPickerOpen(true); }} className="px-4 py-2 bg-primary-50 text-primary-600 rounded-xl text-sm font-medium hover:bg-primary-100 flex items-center justify-center gap-2 whitespace-nowrap">
                           <Upload className="w-4 h-4" /> Pilih Media
                         </button>
                       </div>
                       {settings.logo.content?.logo_url && (
-                        <button onClick={() => updateContent('logo', { ...settings.logo.content, logo_url: '' })} className="px-4 py-1.5 text-xs text-red-500 hover:bg-red-50 rounded-lg">
+                        <button onClick={() => updateContent('logo', { ...settings.logo.content, logo_url: '', favicon_url: '' })} className="px-4 py-1.5 text-xs text-red-500 hover:bg-red-50 rounded-lg">
                           Hapus Logo
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Favicon */}
-                <div className="border border-gray-200 rounded-xl p-4 bg-gray-50 space-y-3">
-                  <h4 className="text-sm font-bold text-gray-700">Favicon (Ikon Tab Browser)</h4>
-                  <p className="text-xs text-gray-500">Ikon kecil yang tampil di tab browser. Gunakan gambar PNG/ICO ukuran 32x32 atau 64x64 px.</p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-white border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
-                      {settings.logo.content?.favicon_url ? (
-                        <>
-                          <img src={getFullUrl(settings.logo.content.favicon_url)} alt="Favicon" className="w-full h-full object-contain p-1" onError={e => { e.target.style.display = 'none'; if(e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'block'; }} />
-                          <span className="text-red-400 text-[10px] text-center" style={{ display: 'none' }}>Error</span>
-                        </>
-                      ) : (
-                        <span className="text-gray-300 text-[10px] text-center">Belum ada</span>
-                      )}
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <input className="input-field text-sm py-2" value={settings.logo.content?.favicon_url || ''} onChange={e => updateContent('logo', { ...settings.logo.content, favicon_url: e.target.value })} placeholder="Masukkan URL favicon atau pilih..." />
-                        <button onClick={() => { setMediaPickerTarget('favicon_url'); setIsMediaPickerOpen(true); }} className="px-4 py-2 bg-primary-50 text-primary-600 rounded-xl text-sm font-medium hover:bg-primary-100 flex items-center justify-center gap-2 whitespace-nowrap">
-                          <Upload className="w-4 h-4" /> Pilih Media
-                        </button>
-                      </div>
-                      {settings.logo.content?.favicon_url && (
-                        <button onClick={() => updateContent('logo', { ...settings.logo.content, favicon_url: '' })} className="px-4 py-1.5 text-xs text-red-500 hover:bg-red-50 rounded-lg">
-                          Hapus Favicon
                         </button>
                       )}
                     </div>

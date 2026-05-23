@@ -55,8 +55,8 @@ export const SiteSettingsProvider = ({ children }) => {
       if (data.logo) {
         const content = parseContent(data.logo.content);
         setLogoData(prev => ({ ...prev, ...content }));
-        if (content.favicon_url) {
-          updateFavicon(getFullUrl(content.favicon_url));
+        if (content.favicon_url || content.logo_url) {
+          updateFavicon(getFullUrl(content.favicon_url || content.logo_url));
         }
       }
 
@@ -100,7 +100,7 @@ export const SiteSettingsProvider = ({ children }) => {
   }, []);
 
   const logoUrl = getFullUrl(logoData.logo_url);
-  const faviconUrl = getFullUrl(logoData.favicon_url);
+  const faviconUrl = getFullUrl(logoData.favicon_url || logoData.logo_url);
 
   // Prioritas: school_info > logo > default
   const schoolName = schoolInfo.school_name || logoData.school_name || 'MI Al-Ghazali';
