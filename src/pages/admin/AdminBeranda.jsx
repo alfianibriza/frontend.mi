@@ -356,7 +356,11 @@ const AdminBeranda = () => {
                   <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3 bg-gray-50">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-bold text-gray-600">Slide {i + 1}</span>
-                      <button onClick={() => { const s = [...settings.hero_slides.content]; s.splice(i, 1); updateContent('hero_slides', s); }} className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => { if (i > 0) { const s = [...settings.hero_slides.content]; [s[i-1], s[i]] = [s[i], s[i-1]]; updateContent('hero_slides', s); } }} disabled={i === 0} className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed" title="Geser ke Atas"><ChevronUp className="w-4 h-4" /></button>
+                        <button onClick={() => { if (i < settings.hero_slides.content.length - 1) { const s = [...settings.hero_slides.content]; [s[i], s[i+1]] = [s[i+1], s[i]]; updateContent('hero_slides', s); } }} disabled={i === settings.hero_slides.content.length - 1} className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed" title="Geser ke Bawah"><ChevronDown className="w-4 h-4" /></button>
+                        <button onClick={() => { const s = [...settings.hero_slides.content]; s.splice(i, 1); updateContent('hero_slides', s); }} className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg" title="Hapus Slide"><Trash2 className="w-4 h-4" /></button>
+                      </div>
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-gray-500 mb-1">Judul</label>
