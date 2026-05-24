@@ -414,10 +414,16 @@ const AdminBeranda = () => {
                         )}
                       </div>
                     )}
+                    {/* Duration Input */}
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Durasi Tampil (Detik)</label>
+                      <input type="number" min="1" className="input-field text-sm" value={slide.duration || 5} onChange={e => { const s = [...settings.hero_slides.content]; s[i] = { ...s[i], duration: parseInt(e.target.value) || 5 }; updateContent('hero_slides', s); }} placeholder="5" />
+                      <p className="text-[10px] text-gray-400 mt-1">Lama slide ini ditampilkan sebelum pindah ke slide berikutnya. Default: 5 detik.</p>
+                    </div>
                   </div>
                   );
                 })}
-                <button onClick={() => updateContent('hero_slides', [...(settings.hero_slides.content || []), { image: '', video_url: '', media_type: 'image', title: 'Slide Baru', subtitle: 'Deskripsi slide baru' }])} className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-sm text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors flex items-center justify-center gap-2">
+                <button onClick={() => updateContent('hero_slides', [...(settings.hero_slides.content || []), { image: '', video_url: '', media_type: 'image', duration: 5, title: 'Slide Baru', subtitle: 'Deskripsi slide baru' }])} className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-sm text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors flex items-center justify-center gap-2">
                   <Plus className="w-4 h-4" /> Tambah Slide
                 </button>
               </div>

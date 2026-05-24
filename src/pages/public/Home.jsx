@@ -106,7 +106,7 @@ const Home = () => {
             }
 
             return (
-            <SwiperSlide key={index}>
+            <SwiperSlide key={index} data-swiper-autoplay={slide.duration ? slide.duration * 1000 : 5000}>
               <div className="relative h-full w-full overflow-hidden bg-black">
                 {isVideo && videoId ? (
                   <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
