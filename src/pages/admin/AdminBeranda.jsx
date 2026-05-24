@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { homeSettingApi } from '../../api';
 import { useSiteSettings } from '../../contexts/SiteSettingsContext';
-import { Save, Upload, Plus, Trash2, Eye, EyeOff, Image, Type, BarChart3, Megaphone, Sparkles, RefreshCw, ChevronDown, ChevronUp, GripVertical, Shield, Building2, UserCircle } from 'lucide-react';
+import { Save, Upload, Plus, Trash2, Eye, EyeOff, Image, Type, BarChart3, Megaphone, Sparkles, RefreshCw, ChevronDown, ChevronUp, GripVertical, Shield, Building2, UserCircle, Video } from 'lucide-react';
 import MediaPickerModal from '../../components/common/MediaPickerModal';
 
 const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
@@ -350,7 +350,9 @@ const AdminBeranda = () => {
           {settings.hero_slides && (
             <SectionCard title="Hero Slides" icon={Image} isActive={settings.hero_slides.is_active} onToggle={() => toggleActive('hero_slides')} defaultOpen>
               <div className="space-y-4">
-                {settings.hero_slides.content?.map((slide, i) => (
+                {settings.hero_slides.content?.map((slide, i) => {
+                  const mediaType = slide.media_type || 'image';
+                  return (
                   <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3 bg-gray-50">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-bold text-gray-600">Slide {i + 1}</span>
@@ -364,21 +366,58 @@ const AdminBeranda = () => {
                       <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle</label>
                       <textarea className="input-field" rows={2} value={slide.subtitle} onChange={e => { const s = [...settings.hero_slides.content]; s[i] = { ...s[i], subtitle: e.target.value }; updateContent('hero_slides', s); }} />
                     </div>
+                    {/* Media Type Selector */}
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Gambar</label>
-                      <div className="flex items-center gap-3">
-                        <input className="input-field flex-1 text-sm" value={slide.image} onChange={e => { const s = [...settings.hero_slides.content]; s[i] = { ...s[i], image: e.target.value }; updateContent('hero_slides', s); }} placeholder="URL atau path gambar" />
-                        <button onClick={() => { setUploadingFor(i); setMediaPickerTarget('slide_image'); setIsMediaPickerOpen(true); }} className="px-3 py-2.5 bg-primary-50 text-primary-600 rounded-xl text-xs font-medium hover:bg-primary-100 flex items-center gap-1 whitespace-nowrap">
-                          <Upload className="w-3 h-3" /> Pilih
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Tipe Media</label>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => { const s = [...settings.hero_slides.content]; s[i] = { ...s[i], media_type: 'image' }; updateContent('hero_slides', s); }}
+                          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium transition-colors ${mediaType === 'image' ? 'bg-primary-100 text-primary-700 ring-2 ring-primary-300' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                        >
+                          <Image className="w-3.5 h-3.5" /> Gambar
+                        </button>
+                        <button
+                          onClick={() => { const s = [...settings.hero_slides.content]; s[i] = { ...s[i], media_type: 'video' }; updateContent('hero_slides', s); }}
+                          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium transition-colors ${mediaType === 'video' ? 'bg-red-100 text-red-700 ring-2 ring-red-300' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                        >
+                          <Video className="w-3.5 h-3.5" /> Video YouTube
                         </button>
                       </div>
-                      {slide.image && (
-                        <img src={getFullUrl(slide.image)} alt="" className="mt-2 h-24 rounded-lg object-cover" onError={e => e.target.style.display = 'none'} />
-                      )}
                     </div>
+                    {/* Media Input */}
+                    {mediaType === 'video' ? (
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Link YouTube</label>
+                        <input className="input-field text-sm" value={slide.video_url || ''} onChange={e => { const s = [...settings.hero_slides.content]; s[i] = { ...s[i], video_url: e.target.value }; updateContent('hero_slides', s); }} placeholder="https://www.youtube.com/watch?v=... atau https://youtu.be/..." />
+                        <p className="text-[10px] text-gray-400 mt-1">Mendukung format: youtube.com/watch?v=ID, youtu.be/ID, atau youtube.com/embed/ID</p>
+                        {slide.video_url && (() => {
+                          const match = slide.video_url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
+                          const videoId = match?.[1];
+                          return videoId ? (
+                            <div className="mt-2 rounded-lg overflow-hidden border border-gray-200" style={{ aspectRatio: '16/9', maxHeight: '160px' }}>
+                              <iframe src={`https://www.youtube.com/embed/${videoId}`} title="Preview" className="w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                            </div>
+                          ) : <p className="text-xs text-red-400 mt-1">URL YouTube tidak valid</p>;
+                        })()}
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Gambar</label>
+                        <div className="flex items-center gap-3">
+                          <input className="input-field flex-1 text-sm" value={slide.image || ''} onChange={e => { const s = [...settings.hero_slides.content]; s[i] = { ...s[i], image: e.target.value }; updateContent('hero_slides', s); }} placeholder="URL atau path gambar" />
+                          <button onClick={() => { setUploadingFor(i); setMediaPickerTarget('slide_image'); setIsMediaPickerOpen(true); }} className="px-3 py-2.5 bg-primary-50 text-primary-600 rounded-xl text-xs font-medium hover:bg-primary-100 flex items-center gap-1 whitespace-nowrap">
+                            <Upload className="w-3 h-3" /> Pilih
+                          </button>
+                        </div>
+                        {slide.image && (
+                          <img src={getFullUrl(slide.image)} alt="" className="mt-2 h-24 rounded-lg object-cover" onError={e => e.target.style.display = 'none'} />
+                        )}
+                      </div>
+                    )}
                   </div>
-                ))}
-                <button onClick={() => updateContent('hero_slides', [...(settings.hero_slides.content || []), { image: '', title: 'Slide Baru', subtitle: 'Deskripsi slide baru' }])} className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-sm text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors flex items-center justify-center gap-2">
+                  );
+                })}
+                <button onClick={() => updateContent('hero_slides', [...(settings.hero_slides.content || []), { image: '', video_url: '', media_type: 'image', title: 'Slide Baru', subtitle: 'Deskripsi slide baru' }])} className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-sm text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors flex items-center justify-center gap-2">
                   <Plus className="w-4 h-4" /> Tambah Slide
                 </button>
               </div>

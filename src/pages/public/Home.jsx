@@ -97,10 +97,30 @@ const Home = () => {
           loop={true}
           className="h-full w-full"
         >
-          {slides.map((slide, index) => (
+          {slides.map((slide, index) => {
+            const isVideo = slide.media_type === 'video' && slide.video_url;
+            let videoId = null;
+            if (isVideo) {
+              const match = slide.video_url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
+              videoId = match ? match[1] : null;
+            }
+
+            return (
             <SwiperSlide key={index}>
-              <div className="relative h-full w-full">
-                <img src={getImageSrc(slide.image)} alt={slide.title} className="h-full w-full object-cover" />
+              <div className="relative h-full w-full overflow-hidden bg-black">
+                {isVideo && videoId ? (
+                  <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1`}
+                      title={slide.title}
+                      className="absolute top-1/2 left-1/2 w-[150vw] h-[150vh] min-w-[100%] min-h-[100%] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                      style={{ border: 0 }}
+                      allow="autoplay; encrypted-media"
+                    />
+                  </div>
+                ) : (
+                  <img src={getImageSrc(slide.image)} alt={slide.title} className="h-full w-full object-cover" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
                 <div className="absolute inset-0 flex items-center">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -138,7 +158,8 @@ const Home = () => {
                 </div>
               </div>
             </SwiperSlide>
-          ))}
+            );
+          })}
         </Swiper>
       </section>
 
