@@ -40,7 +40,12 @@ const ProfilePage = () => {
           const res = await profileApi.getByKey(cfg.key);
           setProfile(res.data.data);
         }
-      } catch { }
+      } catch (err) {
+        console.error('Error loading profile data:', err);
+        if (section === 'ekstrakurikuler') {
+          setItems([{ id: 999, name: 'Error Loading Data', description: err.message || 'Unknown error occurred' }]);
+        }
+      }
       setLoading(false);
     };
     load();
