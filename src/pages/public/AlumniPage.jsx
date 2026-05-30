@@ -3,7 +3,7 @@ import { alumniApi } from '../../api';
 import { GraduationCap, Search, X, Briefcase, Calendar, Quote, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
 const AlumniPage = () => {
   const [items, setItems] = useState([]);

@@ -3,7 +3,7 @@ import { achievementApi } from '../../api';
 import { Trophy, Search, X, Filter, Award, Calendar, MapPin, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
 const LEVELS = [
   { value: '', label: 'Semua', icon: '', color: 'from-primary-500 to-primary-700' },
