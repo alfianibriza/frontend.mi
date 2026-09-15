@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -7,7 +7,7 @@ import {
   GraduationCap, Users, Calendar, Trophy, ArrowRight, Star, BookOpen, Heart,
   ShieldCheck, ChevronRight, Newspaper, Award, Target
 } from 'lucide-react';
-import { newsApi, profileApi, homeSettingApi } from '../../api';
+import { newsApi, homeSettingApi } from '../../api';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -15,9 +15,118 @@ import 'swiper/css/pagination';
 // Map icon string ke komponen
 const ICON_MAP = { GraduationCap, Users, Calendar, Trophy, BookOpen, Heart, ShieldCheck, Star, Award, Target };
 
+// Komponen Video Background YouTube yang responsif dan mengisi penuh layar atas-bawah
+const HeroVideoSlide = ({ videoId, title }) => {
+  const containerRef = useRef(null);
+  const iframeRef = useRef(null);
+  const [dimensions, setDimensions] = useState({
+    width: 'max(100%, 360vw, 200vh)',
+    height: 'max(100%, 200vh)',
+  });
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (!containerRef.current) return;
+      const w = containerRef.current.clientWidth || window.innerWidth;
+      const h = containerRef.current.clientHeight || window.innerHeight;
+      if (!w || !h) return;
+
+      const targetRatio = 16 / 9;
+      const currentRatio = w / h;
+
+      let vidW, vidH;
+      if (currentRatio < targetRatio) {
+        // Mode Mobile / Layar Tegak (Portrait):
+        // Tinggi menjadi acuan, dilebihkan 30% agar menutup penuh atas-bawah
+        // Lebar otomatis ikut melebar menyesuaikan rasio 16:9
+        vidH = h * 1.3;
+        vidW = vidH * targetRatio;
+      } else {
+        // Mode Desktop / Layar Lebar (Landscape):
+        // Lebar dilebihkan 25% dan tinggi menyesuaikan
+        vidW = w * 1.25;
+        vidH = vidW / targetRatio;
+      }
+
+      setDimensions({
+        width: `${Math.ceil(vidW)}px`,
+        height: `${Math.ceil(vidH)}px`,
+      });
+    };
+
+    updateDimensions();
+
+    const ro = new ResizeObserver(updateDimensions);
+    if (containerRef.current) ro.observe(containerRef.current);
+    window.addEventListener('resize', updateDimensions);
+    window.addEventListener('orientationchange', updateDimensions);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', updateDimensions);
+      window.removeEventListener('orientationchange', updateDimensions);
+    };
+  }, []);
+
+  // Listen event dari YouTube Iframe API untuk looping mulus tanpa parameter playlist
+  useEffect(() => {
+    const handleMessage = (event) => {
+      try {
+        if (!event.data || typeof event.data !== 'string') return;
+        const data = JSON.parse(event.data);
+        if (data.event === 'infoDelivery' && data.info && data.info.playerState === 0) {
+          if (iframeRef.current && iframeRef.current.contentWindow) {
+            iframeRef.current.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: 'seekTo', args: [0, true] }),
+              '*'
+            );
+            iframeRef.current.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: 'playVideo', args: '' }),
+              '*'
+            );
+          }
+        }
+      } catch {
+        // ignore non-json messages
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  // Embed URL bersih tanpa playlist (menghilangkan tombol prev/next), controls=0 (tanpa play button/bar)
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&loop=1&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&showinfo=0&autohide=1&enablejsapi=1`;
+
+  return (
+    <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden bg-gray-950 pointer-events-none select-none">
+      <iframe
+        ref={iframeRef}
+        src={embedUrl}
+        title={title || 'Background Video'}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none border-0"
+        style={{
+          width: dimensions.width,
+          height: dimensions.height,
+          minWidth: '100%',
+          minHeight: '100%',
+          maxWidth: 'none',
+          maxHeight: 'none',
+        }}
+        allow="autoplay; encrypted-media; picture-in-picture; accelerometer; gyroscope"
+        tabIndex={-1}
+      />
+      {/* Pelindung sentuhan agar YouTube tidak memicu kontrol mobile */}
+      <div className="absolute inset-0 z-10 pointer-events-none select-none bg-transparent" />
+    </div>
+  );
+};
+
 const Home = () => {
   const [latestNews, setLatestNews] = useState([]);
   const [homeSettings, setHomeSettings] = useState(null);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+
 
   const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
@@ -86,6 +195,9 @@ const Home = () => {
     return `${API_BASE}/${img}`;
   };
 
+  const currentSlide = slides[activeSlideIndex % slides.length];
+  const isCurrentSlideVideo = currentSlide?.media_type === 'video' && currentSlide?.video_url;
+
   return (
     <div className="overflow-x-hidden">
       {/* Hero Slider */}
@@ -94,8 +206,9 @@ const Home = () => {
           modules={[Autoplay, Pagination]}
           autoplay={{ delay: 5500, disableOnInteraction: false }}
           pagination={{ clickable: true }}
-          loop={true}
-          className="h-full w-full"
+          loop={slides.length > 1}
+          onSlideChange={(swiper) => setActiveSlideIndex(swiper.realIndex)}
+          className={`h-full w-full hero-swiper ${isCurrentSlideVideo ? 'hide-swiper-controls' : ''}`}
         >
           {slides.map((slide, index) => {
             const isVideo = slide.media_type === 'video' && slide.video_url;
@@ -109,20 +222,12 @@ const Home = () => {
             <SwiperSlide key={index} data-swiper-autoplay={slide.duration ? slide.duration * 1000 : 5000}>
               <div className="relative h-full w-full overflow-hidden bg-gray-950">
                 {isVideo && videoId ? (
-                  <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1`}
-                      title={slide.title}
-                      className="absolute top-1/2 left-1/2 w-[150vw] h-[150vh] min-w-[100%] min-h-[100%] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                      style={{ border: 0 }}
-                      allow="autoplay; encrypted-media"
-                    />
-                  </div>
+                  <HeroVideoSlide videoId={videoId} title={slide.title} />
                 ) : (
                   <img src={getImageSrc(slide.image)} alt={slide.title} className="h-full w-full object-cover scale-105 animate-pulse duration-1000" style={{ animationDuration: '8s' }} />
                 )}
                 {/* Modern Dark Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/95 via-gray-950/60 to-gray-950/30 lg:bg-gradient-to-r lg:from-gray-950/90 lg:via-gray-950/50 lg:to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/95 via-gray-950/60 to-gray-950/30 lg:bg-gradient-to-r lg:from-gray-950/90 lg:via-gray-950/50 lg:to-transparent pointer-events-none" />
                 
                 {/* Hero Content */}
                 <div className="absolute inset-0 flex items-center pt-16 lg:pt-0">

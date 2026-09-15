@@ -212,3 +212,13 @@
 .swiper-button-next::after, .swiper-button-prev::after {
   filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
+
+/* Hide pagination / controls when video slide is active or on touch */
+.hide-swiper-controls .swiper-pagination,
+.hide-swiper-controls .swiper-button-next,
+.hide-swiper-controls .swiper-button-prev {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
