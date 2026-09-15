@@ -7,7 +7,7 @@ import {
   Home, School, GraduationCap, Newspaper, LayoutGrid, X, 
   ChevronDown, ChevronRight, LayoutDashboard, LogOut, 
   Sparkles, BookOpen, Trophy, Users, Award, FileText, 
-  Building2, Phone, MapPin, LogIn, Calendar, Maximize, Minimize
+  Building2, Phone, MapPin, LogIn, Calendar
 } from 'lucide-react';
 
 // Nama bulan Hijriyah standar madrasah/Indonesia
@@ -31,7 +31,6 @@ const Navbar = () => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const { isAuthenticated, isAdmin, user, logout } = useAuth();
   const { logoUrl, schoolName, schoolSubtitle, phone, address } = useSiteSettings();
   const location = useLocation();
@@ -40,67 +39,6 @@ const Navbar = () => {
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
-  };
-
-  // Pantau perubahan status fullscreen browser
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      const isDocFullscreen = Boolean(
-        document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.mozFullScreenElement ||
-        document.msFullscreenElement
-      );
-      setIsFullscreen(isDocFullscreen);
-    };
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
-    };
-  }, []);
-
-  const toggleFullscreen = async () => {
-    try {
-      const isDocFullscreen = Boolean(
-        document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.mozFullScreenElement ||
-        document.msFullscreenElement
-      );
-
-      if (!isDocFullscreen) {
-        const elem = document.documentElement;
-        if (elem.requestFullscreen) {
-          await elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) {
-          await elem.webkitRequestFullscreen();
-        } else if (elem.mozRequestFullScreen) {
-          await elem.mozRequestFullScreen();
-        } else if (elem.msRequestFullscreen) {
-          await elem.msRequestFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
-          await document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          await document.webkitExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-          await document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-          await document.msExitFullscreen();
-        }
-      }
-    } catch (err) {
-      console.warn('Gagal mengubah mode fullscreen:', err);
-    }
   };
 
   useEffect(() => {
@@ -405,27 +343,8 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile Top Header Right: Fullscreen, Gregorian & Hijri Date */}
+            {/* Mobile Top Header Right: Gregorian & Hijri Date */}
             <div className="flex items-center gap-1.5 lg:hidden">
-              {/* Tombol Fullscreen di sebelah kiri informasi tanggal */}
-              <button
-                type="button"
-                onClick={toggleFullscreen}
-                className={`flex items-center justify-center w-8 h-8 rounded-xl border transition-all active:scale-95 shrink-0 ${
-                  isLightNav 
-                    ? 'bg-emerald-50/80 border-emerald-200/60 text-emerald-800 hover:bg-emerald-100/70 shadow-2xs' 
-                    : 'bg-black/40 backdrop-blur-md border-white/20 text-white hover:bg-black/60 shadow-xs'
-                }`}
-                aria-label={isFullscreen ? 'Keluar Layar Penuh' : 'Layar Penuh (Fullscreen)'}
-                title={isFullscreen ? 'Keluar Layar Penuh' : 'Layar Penuh'}
-              >
-                {isFullscreen ? (
-                  <Minimize className="w-3.5 h-3.5" />
-                ) : (
-                  <Maximize className="w-3.5 h-3.5" />
-                )}
-              </button>
-
               <div className={`flex flex-col items-end text-right px-2.5 py-1 rounded-xl border transition-colors ${
                 isLightNav 
                   ? 'bg-emerald-50/80 border-emerald-200/60 text-gray-800' 
