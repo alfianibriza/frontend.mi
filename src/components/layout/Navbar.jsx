@@ -7,14 +7,31 @@ import {
   Home, School, GraduationCap, Newspaper, LayoutGrid, X, 
   ChevronDown, ChevronRight, LayoutDashboard, LogOut, 
   Sparkles, BookOpen, Trophy, Users, Award, FileText, 
-  Building2, Phone, MapPin, LogIn, Calendar
+  Building2, Phone, MapPin, LogIn, Calendar, Maximize, Minimize
 } from 'lucide-react';
+
+// Nama bulan Hijriyah standar madrasah/Indonesia
+const HIJRI_MONTH_NAMES = [
+  'Muharram',
+  'Shafar',
+  'Robiulawal',
+  'Robiulakhir',
+  'Jumadilawal',
+  'Jumadilakhir',
+  'Rojab',
+  "Sya'ban",
+  'Romadhon',
+  'Syawwal',
+  "Dzulqo'dah",
+  'Dzulhijjah',
+];
 
 const Navbar = () => {
   const [activeSheet, setActiveSheet] = useState(null); // 'profile' | 'menu' | null
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { isAuthenticated, isAdmin, user, logout } = useAuth();
   const { logoUrl, schoolName, schoolSubtitle, phone, address } = useSiteSettings();
   const location = useLocation();
@@ -25,6 +42,67 @@ const Navbar = () => {
     return location.pathname.startsWith(path);
   };
 
+  // Pantau perubahan status fullscreen browser
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isDocFullscreen = Boolean(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      );
+      setIsFullscreen(isDocFullscreen);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      const isDocFullscreen = Boolean(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      );
+
+      if (!isDocFullscreen) {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          await elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          await elem.webkitRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+          await elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) {
+          await elem.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          await document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          await document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          await document.msExitFullscreen();
+        }
+      }
+    } catch (err) {
+      console.warn('Gagal mengubah mode fullscreen:', err);
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -33,20 +111,19 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Realtime clock timer (updates every second)
+  // Update tanggal secara berkala
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDateTime(new Date());
-    }, 1000);
+    }, 60000);
     return () => clearInterval(timer);
   }, []);
 
-  // Format Realtime Masehi & Hijriyah
+  // Format Tanggal Masehi & Hijriyah (Format: 4 Robiulakhir 1448)
   const formatDates = (date) => {
     let masehiFull;
     let masehiShort;
     let hijri;
-    let timeStr;
 
     try {
       masehiFull = new Intl.DateTimeFormat('id-ID', {
@@ -68,41 +145,38 @@ const Navbar = () => {
     }
 
     try {
-      hijri = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
+      const parts = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
         day: 'numeric',
-        month: 'long',
+        month: 'numeric',
         year: 'numeric',
-      }).format(date);
-      if (!hijri.includes('H')) {
-        hijri += ' H';
-      }
+      }).formatToParts(date);
+
+      const day = parts.find((p) => p.type === 'day')?.value;
+      const monthNum = parseInt(parts.find((p) => p.type === 'month')?.value || '1', 10);
+      const year = parts.find((p) => p.type === 'year')?.value;
+      const monthName = HIJRI_MONTH_NAMES[monthNum - 1] || 'Robiulakhir';
+
+      hijri = `${day} ${monthName} ${year}`;
     } catch {
       try {
-        hijri = new Intl.DateTimeFormat('id-ID-u-ca-islamic', {
+        const parts = new Intl.DateTimeFormat('id-ID-u-ca-islamic', {
           day: 'numeric',
-          month: 'long',
+          month: 'numeric',
           year: 'numeric',
-        }).format(date);
-        if (!hijri.includes('H')) {
-          hijri += ' H';
-        }
+        }).formatToParts(date);
+
+        const day = parts.find((p) => p.type === 'day')?.value;
+        const monthNum = parseInt(parts.find((p) => p.type === 'month')?.value || '1', 10);
+        const year = parts.find((p) => p.type === 'year')?.value;
+        const monthName = HIJRI_MONTH_NAMES[monthNum - 1] || 'Robiulakhir';
+
+        hijri = `${day} ${monthName} ${year}`;
       } catch {
-        hijri = '';
+        hijri = '4 Robiulakhir 1448';
       }
     }
 
-    try {
-      timeStr = new Intl.DateTimeFormat('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-      }).format(date).replace(/\./g, ':');
-    } catch {
-      timeStr = date.toLocaleTimeString();
-    }
-
-    return { masehiFull, masehiShort, hijri, timeStr };
+    return { masehiFull, masehiShort, hijri };
   };
 
   const dates = formatDates(currentDateTime);
@@ -246,9 +320,9 @@ const Navbar = () => {
               ))}
             </nav>
 
-            {/* Desktop Actions (Right): Realtime Date & PMB */}
+            {/* Desktop Actions (Right): Gregorian & Hijri Date & PMB */}
             <div className="hidden lg:flex items-center gap-3">
-              {/* Realtime Gregorian & Hijri Date Badge */}
+              {/* Gregorian & Hijri Date Badge */}
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-right transition-colors ${
                 isLightNav 
                   ? 'bg-emerald-50/70 border-emerald-200/60 text-gray-800 shadow-2xs' 
@@ -260,20 +334,12 @@ const Navbar = () => {
                   <Calendar className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex flex-col text-right leading-tight">
-                  <div className="flex items-center justify-end gap-1.5">
-                    <span className={`text-[11px] font-bold ${
-                      isLightNav ? 'text-emerald-800' : 'text-emerald-300'
-                    }`}>
-                      {dates.hijri}
-                    </span>
-                    <span className="text-[10px] opacity-40">•</span>
-                    <span className={`text-[10px] font-semibold tabular-nums ${
-                      isLightNav ? 'text-gray-700' : 'text-white/90'
-                    }`}>
-                      {dates.timeStr}
-                    </span>
-                  </div>
-                  <span className={`text-[10px] font-medium ${
+                  <span className={`text-[11px] font-bold tracking-tight ${
+                    isLightNav ? 'text-emerald-800' : 'text-emerald-300'
+                  }`}>
+                    {dates.hijri}
+                  </span>
+                  <span className={`text-[10px] font-medium mt-0.5 ${
                     isLightNav ? 'text-gray-500' : 'text-white/70'
                   }`}>
                     {dates.masehiFull}
@@ -339,8 +405,27 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile Top Header Right: Realtime Gregorian & Hijri Date */}
+            {/* Mobile Top Header Right: Fullscreen, Gregorian & Hijri Date */}
             <div className="flex items-center gap-1.5 lg:hidden">
+              {/* Tombol Fullscreen di sebelah kiri informasi tanggal */}
+              <button
+                type="button"
+                onClick={toggleFullscreen}
+                className={`flex items-center justify-center w-8 h-8 rounded-xl border transition-all active:scale-95 shrink-0 ${
+                  isLightNav 
+                    ? 'bg-emerald-50/80 border-emerald-200/60 text-emerald-800 hover:bg-emerald-100/70 shadow-2xs' 
+                    : 'bg-black/40 backdrop-blur-md border-white/20 text-white hover:bg-black/60 shadow-xs'
+                }`}
+                aria-label={isFullscreen ? 'Keluar Layar Penuh' : 'Layar Penuh (Fullscreen)'}
+                title={isFullscreen ? 'Keluar Layar Penuh' : 'Layar Penuh'}
+              >
+                {isFullscreen ? (
+                  <Minimize className="w-3.5 h-3.5" />
+                ) : (
+                  <Maximize className="w-3.5 h-3.5" />
+                )}
+              </button>
+
               <div className={`flex flex-col items-end text-right px-2.5 py-1 rounded-xl border transition-colors ${
                 isLightNav 
                   ? 'bg-emerald-50/80 border-emerald-200/60 text-gray-800' 
@@ -357,7 +442,7 @@ const Navbar = () => {
                 <span className={`text-[8.5px] font-medium leading-tight mt-0.5 ${
                   isLightNav ? 'text-gray-600' : 'text-white/80'
                 }`}>
-                  {dates.masehiShort} • {dates.timeStr}
+                  {dates.masehiShort}
                 </span>
               </div>
 
