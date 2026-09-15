@@ -89,10 +89,10 @@ const Home = () => {
   return (
     <div className="overflow-x-hidden">
       {/* Hero Slider */}
-      <section className="relative h-[85vh] lg:h-screen">
+      <section className="relative h-[88vh] lg:h-screen min-h-[560px]">
         <Swiper
           modules={[Autoplay, Pagination]}
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          autoplay={{ delay: 5500, disableOnInteraction: false }}
           pagination={{ clickable: true }}
           loop={true}
           className="h-full w-full"
@@ -107,7 +107,7 @@ const Home = () => {
 
             return (
             <SwiperSlide key={index} data-swiper-autoplay={slide.duration ? slide.duration * 1000 : 5000}>
-              <div className="relative h-full w-full overflow-hidden bg-black">
+              <div className="relative h-full w-full overflow-hidden bg-gray-950">
                 {isVideo && videoId ? (
                   <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
                     <iframe
@@ -119,39 +119,51 @@ const Home = () => {
                     />
                   </div>
                 ) : (
-                  <img src={getImageSrc(slide.image)} alt={slide.title} className="h-full w-full object-cover" />
+                  <img src={getImageSrc(slide.image)} alt={slide.title} className="h-full w-full object-cover scale-105 animate-pulse duration-1000" style={{ animationDuration: '8s' }} />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-                <div className="absolute inset-0 flex items-center">
+                {/* Modern Dark Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/95 via-gray-950/60 to-gray-950/30 lg:bg-gradient-to-r lg:from-gray-950/90 lg:via-gray-950/50 lg:to-transparent" />
+                
+                {/* Hero Content */}
+                <div className="absolute inset-0 flex items-center pt-16 lg:pt-0">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                     <motion.div
-                      initial={{ opacity: 0, x: -50 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.8 }}
-                      className="max-w-2xl"
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.7 }}
+                      className="max-w-2xl text-left"
                     >
                       {announcement.is_visible && (
-                        <div className="inline-flex items-center gap-2 bg-primary-600/20 backdrop-blur-md px-4 py-2 rounded-full text-primary-400 text-sm font-semibold mb-6 border border-primary-500/30">
-                          <Star className="w-4 h-4 fill-primary-400" />
-                          {announcement.text}
+                        <div className="inline-flex items-center gap-2 bg-primary-500/20 backdrop-blur-md px-3.5 py-1.5 rounded-full text-primary-300 text-xs sm:text-sm font-semibold mb-4 sm:mb-6 border border-primary-400/30 max-w-full">
+                          <Star className="w-3.5 h-3.5 fill-primary-400 shrink-0" />
+                          <span className="truncate">{announcement.text}</span>
                         </div>
                       )}
-                      <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
+
+                      <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight mb-4 sm:mb-6 tracking-tight">
                         {slide.title.split(' ').map((word, i) => (
                           <span key={i} className={i === 2 ? 'text-primary-400' : ''}>{word} </span>
                         ))}
                       </h1>
-                      <p className="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed">
+
+                      <p className="text-sm sm:text-base md:text-lg text-gray-200 mb-6 sm:mb-8 leading-relaxed max-w-xl opacity-90">
                         {slide.subtitle}
                       </p>
-                      <div className="flex flex-wrap gap-4">
-                        <Link to="/pmb" className="btn-primary !px-8 !py-4 shadow-2xl shadow-primary-600/40 group">
-                          Daftar Sekarang
-                          <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                        <Link 
+                          to="/pmb" 
+                          className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-sm sm:text-base font-semibold text-white bg-primary-600 hover:bg-primary-500 shadow-lg shadow-primary-600/30 hover:shadow-primary-600/50 transition-all duration-200 group min-h-[44px]"
+                        >
+                          Daftar Siswa Baru
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                        {/* <Link to="/profil/sejarah" className="btn-secondary !bg-white/10 !text-white !border-white/20 backdrop-blur-md hover:!bg-white/20 !px-8 !py-4">
+                        <Link 
+                          to="/profil/visi-misi" 
+                          className="inline-flex items-center justify-center px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl text-sm sm:text-base font-medium text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all duration-200 min-h-[44px]"
+                        >
                           Kenali Kami
-                        </Link>*/}
+                        </Link>
                       </div>
                     </motion.div>
                   </div>
@@ -165,8 +177,8 @@ const Home = () => {
 
       {/* Stats Section */}
       {homeSettings?.stats?.is_active !== false && (
-        <section className="relative -mt-20 z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <section className="relative -mt-14 sm:-mt-20 z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {stats.map((stat, i) => {
               const Icon = ICON_MAP[stat.icon] || GraduationCap;
               return (
@@ -174,14 +186,15 @@ const Home = () => {
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 flex flex-col items-center text-center group hover:scale-105 transition-transform duration-300 border border-gray-100"
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-lg shadow-gray-200/40 flex flex-col items-center text-center border border-gray-100 hover:border-primary-200 hover:-translate-y-1 transition-all duration-300 group"
                 >
-                  <div className={`w-12 h-12 ${stat.color} rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg group-hover:rotate-12 transition-transform`}>
-                    <Icon className="w-6 h-6" />
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 ${stat.color} rounded-xl sm:rounded-2xl flex items-center justify-center text-white mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <h3 className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</h3>
-                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">{stat.label}</p>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-0.5 tracking-tight">{stat.value}</h3>
+                  <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider">{stat.label}</p>
                 </motion.div>
               );
             })}
@@ -191,45 +204,65 @@ const Home = () => {
 
       {/* Sambutan Section */}
       {homeSettings?.headmaster_greeting?.is_active !== false && (
-        <section className="py-24 bg-white overflow-hidden">
+        <section className="py-16 sm:py-24 bg-white overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }} className="relative">
-                <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-gray-50">
-                  <img src={getImageSrc(greetingData.image_url)} alt={greetingData.name} className="w-full aspect-[4/5] object-cover" />
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+              
+              {/* Photo */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }} 
+                whileInView={{ opacity: 1, scale: 1 }} 
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }} 
+                className="lg:col-span-5 relative max-w-md mx-auto lg:max-w-none w-full"
+              >
+                <div className="relative z-10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-gray-100">
+                  <img 
+                    src={getImageSrc(greetingData.image_url)} 
+                    alt={greetingData.name} 
+                    className="w-full aspect-[4/5] object-cover" 
+                  />
                 </div>
-                <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary-100 rounded-full blur-3xl opacity-60" />
+                <div className="absolute -top-6 -left-6 w-36 h-36 bg-primary-100/60 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute -bottom-6 -right-6 w-36 h-36 bg-accent-100/60 rounded-full blur-2xl pointer-events-none" />
               </motion.div>
 
-              <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-                <div className="inline-flex items-center gap-2 bg-primary-50 text-primary-700 px-4 py-2 rounded-full text-sm font-bold mb-6 uppercase tracking-wider">
-                  <Star className="w-4 h-4 fill-primary-700" />
+              {/* Text */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="lg:col-span-7"
+              >
+                <div className="inline-flex items-center gap-2 bg-primary-50 text-primary-700 px-3.5 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-wider border border-primary-100">
+                  <Star className="w-3.5 h-3.5 fill-primary-600 text-primary-600" />
                   Sambutan Kepala Madrasah
                 </div>
-                <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-8 leading-tight">
+                
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
                   {greetingData.title.split(' ').map((word, i) => {
-                    // Let's assume the last 2 words should be highlighted (like "Unggul & Beradab")
-                    // This is a simple heuristic. A better way might be needed if title length varies greatly.
-                    // For now, I'll just keep the original logic for "Unggul & Beradab"
-                    return <span key={i} className={i > 1 ? 'text-primary-600' : ''}>{word} </span>
+                    return <span key={i} className={i > 1 ? 'text-primary-600' : ''}>{word} </span>;
                   })}
                 </h2>
-                <div className="prose prose-lg text-gray-600 italic mb-10 leading-relaxed">
+
+                <div className="text-gray-600 italic mb-8 leading-relaxed text-base sm:text-lg border-l-4 border-primary-400 pl-4 sm:pl-6 py-1 bg-primary-50/20 rounded-r-2xl">
                   <p className="relative">
-                    <span className="absolute -top-4 -left-6 text-6xl text-primary-100 font-serif">"</span>
-                    {greetingData.text}
+                    "{greetingData.text}"
                   </p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center overflow-hidden border border-gray-200">
-                    <Users className="w-8 h-8 text-primary-600" />
+
+                <div className="flex items-center gap-4 bg-gray-50/80 p-3 sm:p-4 rounded-2xl border border-gray-100 w-fit">
+                  <div className="w-12 h-12 bg-primary-100 text-primary-700 rounded-xl flex items-center justify-center shrink-0">
+                    <Users className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-gray-900">{greetingData.name}</h4>
-                    <p className="text-sm font-semibold text-primary-600 uppercase tracking-widest">{greetingData.role}</p>
+                    <h4 className="text-base sm:text-lg font-bold text-gray-900 leading-tight">{greetingData.name}</h4>
+                    <p className="text-xs sm:text-sm font-medium text-primary-600 uppercase tracking-wider">{greetingData.role}</p>
                   </div>
                 </div>
               </motion.div>
+
             </div>
           </div>
         </section>
@@ -237,24 +270,43 @@ const Home = () => {
 
       {/* Programs Section */}
       {homeSettings?.programs?.is_active !== false && (
-        <section className="py-24 bg-gray-50">
+        <section className="py-16 sm:py-24 bg-gray-50/60 border-y border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">{programData.section_title}</h2>
-              <p className="text-gray-600 text-lg">{programData.section_subtitle}</p>
+            <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+              <span className="text-xs font-bold text-primary-600 uppercase tracking-widest bg-primary-50 px-3 py-1 rounded-full border border-primary-100">
+                Keunggulan Madrasah
+              </span>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mt-3 mb-4 tracking-tight">
+                {programData.section_title}
+              </h2>
+              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                {programData.section_subtitle}
+              </p>
             </div>
-            <div className="grid md:grid-cols-3 gap-8">
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {programData.items?.map((prog, i) => {
                 const Icon = ICON_MAP[prog.icon] || BookOpen;
                 return (
-                  <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                    className="bg-white p-8 rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 hover:shadow-2xl transition-all duration-300 group">
-                    <div className={`w-16 h-16 ${prog.bg} ${prog.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className="w-8 h-8" />
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, y: 20 }} 
+                    whileInView={{ opacity: 1, y: 0 }} 
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 flex flex-col justify-between group"
+                  >
+                    <div>
+                      <div className={`w-14 h-14 ${prog.bg} ${prog.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                        <Icon className="w-7 h-7" />
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">{prog.title}</h3>
+                      <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6">{prog.desc}</p>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">{prog.title}</h3>
-                    <p className="text-gray-600 leading-relaxed mb-6">{prog.desc}</p>
-                    <Link to="/profil/program-kerja" className={`inline-flex items-center font-bold ${prog.color} hover:underline`}>
+                    <Link 
+                      to="/profil/program-kerja" 
+                      className={`inline-flex items-center text-sm font-semibold ${prog.color} hover:underline mt-auto`}
+                    >
                       Selengkapnya <ChevronRight className="w-4 h-4 ml-1" />
                     </Link>
                   </motion.div>
@@ -266,53 +318,82 @@ const Home = () => {
       )}
 
       {/* Latest News Section */}
-      <section className="py-24 bg-white">
+      <section className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 sm:mb-14 gap-4">
             <div className="max-w-2xl">
-              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">Warta Al-Ghazali</h2>
-              <p className="text-gray-600 text-lg">Ikuti perkembangan terbaru mengenai kegiatan, prestasi, dan informasi penting lainnya dari sekolah kami.</p>
+              <span className="text-xs font-bold text-primary-600 uppercase tracking-widest bg-primary-50 px-3 py-1 rounded-full border border-primary-100">
+                Informasi & Kabar
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mt-2 mb-2 tracking-tight">Warta Al-Ghazali</h2>
+              <p className="text-gray-600 text-sm sm:text-base">Ikuti perkembangan kegiatan, prestasi, dan informasi penting madrasah.</p>
             </div>
-            <Link to="/berita" className="btn-secondary !py-3 !px-6 flex items-center gap-2 group">
-              Lihat Semua Berita
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <Link 
+              to="/berita" 
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:text-primary-600 hover:border-primary-300 hover:bg-primary-50/50 transition-all self-start sm:self-auto min-h-[44px]"
+            >
+              <span>Lihat Semua Berita</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
           {latestNews.length > 0 ? (
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {latestNews.map((news, i) => (
-                <motion.div key={news.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-                  <Link to={`/berita/${news.slug}`} className="group block bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-xl shadow-gray-100/50 hover:shadow-2xl transition-all duration-300">
-                    <div className="relative aspect-[16/10] overflow-hidden">
+                <motion.div 
+                  key={news.id} 
+                  initial={{ opacity: 0, y: 20 }} 
+                  whileInView={{ opacity: 1, y: 0 }} 
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                >
+                  <Link 
+                    to={`/berita/${news.slug}`} 
+                    className="group block bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col"
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
                       {news.thumbnail ? (
-                        <img src={news.thumbnail.startsWith('/') ? `${API_BASE}${news.thumbnail}` : news.thumbnail} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <img 
+                          src={news.thumbnail.startsWith('/') ? `${API_BASE}${news.thumbnail}` : news.thumbnail} 
+                          alt={news.title} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center">
-                          <Newspaper className="w-12 h-12 text-primary-300" />
+                        <div className="w-full h-full bg-gradient-to-br from-primary-50 to-primary-100/50 flex items-center justify-center">
+                          <Newspaper className="w-10 h-10 text-primary-300" />
                         </div>
                       )}
-                      <div className="absolute top-4 left-4">
-                        <span className="bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-primary-700 shadow-sm uppercase tracking-wider">Kegiatan</span>
+                      <div className="absolute top-3 left-3">
+                        <span className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-lg text-[11px] font-bold text-primary-700 shadow-sm uppercase tracking-wider">
+                          Kegiatan
+                        </span>
                       </div>
                     </div>
-                    <div className="p-8">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 mb-4 uppercase tracking-widest">
-                        <Calendar className="w-3 h-3" />
-                        {new Date(news.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center gap-1.5 text-xs font-medium text-gray-400 mb-2.5">
+                          <Calendar className="w-3.5 h-3.5 text-primary-500" />
+                          <span>{new Date(news.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 mb-2 leading-snug">
+                          {news.title}
+                        </h3>
+                        <p className="text-gray-500 line-clamp-2 text-xs sm:text-sm leading-relaxed mb-4">
+                          {news.content?.replace(/<[^>]*>/g, '').substring(0, 100)}...
+                        </p>
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 mb-4 leading-tight">{news.title}</h3>
-                      <p className="text-gray-500 line-clamp-2 text-sm leading-relaxed mb-6">{news.content?.replace(/<[^>]*>/g, '').substring(0, 120)}...</p>
-                      <span className="inline-flex items-center text-sm font-bold text-primary-600">Baca Selengkapnya <ChevronRight className="w-4 h-4 ml-1" /></span>
+                      <span className="inline-flex items-center text-xs sm:text-sm font-bold text-primary-600 group-hover:translate-x-0.5 transition-transform">
+                        Baca Selengkapnya <ChevronRight className="w-4 h-4 ml-1" />
+                      </span>
                     </div>
                   </Link>
                 </motion.div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-200">
-              <Newspaper className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 font-medium">Belum ada berita terbaru saat ini.</p>
+            <div className="text-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+              <Newspaper className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 text-sm font-medium">Belum ada berita terbaru saat ini.</p>
             </div>
           )}
         </div>
@@ -320,20 +401,35 @@ const Home = () => {
 
       {/* CTA Section */}
       {homeSettings?.cta?.is_active !== false && (
-        <section className="py-24 px-4">
-          <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }}
-            className="max-w-7xl mx-auto hero-gradient rounded-[3.5rem] p-8 md:p-20 relative overflow-hidden text-center">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-[100px] -mr-48 -mt-48" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-400/20 rounded-full blur-[100px] -ml-48 -mb-48" />
-            <div className="relative z-10 max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-8 leading-tight">{ctaData.title}</h2>
-              <p className="text-primary-100 text-lg md:text-xl mb-12 leading-relaxed opacity-90">{ctaData.subtitle}</p>
-              <div className="flex flex-wrap justify-center gap-6">
-                <Link to={ctaData.primary_button?.link || '/pmb'} className="btn-primary !bg-white !text-primary-800 !px-10 !py-5 !text-lg !rounded-2xl shadow-2xl hover:scale-105 transition-transform group">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }}
+            className="max-w-7xl mx-auto bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 rounded-3xl p-8 sm:p-14 md:p-16 relative overflow-hidden text-center shadow-xl border border-primary-700/50"
+          >
+            <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl -mr-40 -mt-40 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl -ml-40 -mb-40 pointer-events-none" />
+            
+            <div className="relative z-10 max-w-2xl mx-auto">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 sm:mb-6 leading-tight tracking-tight">
+                {ctaData.title}
+              </h2>
+              <p className="text-primary-100 text-sm sm:text-lg mb-8 sm:mb-10 leading-relaxed opacity-90">
+                {ctaData.subtitle}
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+                <Link 
+                  to={ctaData.primary_button?.link || '/pmb'} 
+                  className="inline-flex items-center justify-center px-7 sm:px-9 py-3.5 sm:py-4 rounded-xl text-sm sm:text-base font-bold bg-white text-primary-900 hover:bg-gray-100 shadow-xl hover:scale-105 transition-all group min-h-[44px]"
+                >
                   {ctaData.primary_button?.text || 'Daftar Sekarang'}
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link to={ctaData.secondary_button?.link || '/fasilitas'} className="btn-secondary !border-white/30 !text-white !bg-transparent backdrop-blur-md hover:!bg-white/10 !px-10 !py-5 !text-lg !rounded-2xl transition-all">
+                <Link 
+                  to={ctaData.secondary_button?.link || '/fasilitas'} 
+                  className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-sm sm:text-base font-semibold border border-white/30 text-white hover:bg-white/10 backdrop-blur-md transition-all min-h-[44px]"
+                >
                   {ctaData.secondary_button?.text || 'Lihat Fasilitas'}
                 </Link>
               </div>

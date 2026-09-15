@@ -1,65 +1,115 @@
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '../../contexts/SiteSettingsContext';
+import { MapPin, Phone, Mail, ArrowUpRight } from 'lucide-react';
 
 const Footer = () => {
   const { logoUrl, hasLogo, schoolName, schoolSubtitle, address, phone, email, motto } = useSiteSettings();
+
   return (
-    <footer className="bg-gray-900 text-gray-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-gray-950 text-gray-300 border-t border-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
+          
           {/* Brand */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
+          <div className="sm:col-span-2 lg:col-span-4 space-y-4">
+            <Link to="/" className="flex items-center gap-3">
               {hasLogo ? (
-                <img src={logoUrl} alt={schoolName} className="w-10 h-10 rounded-xl object-contain" />
+                <img src={logoUrl} alt={schoolName} className="w-10 h-10 rounded-xl object-contain bg-white/10 p-0.5" />
               ) : (
-                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold">MI</span>
+                <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                  MI
                 </div>
               )}
               <div>
-                <h3 className="text-white font-bold text-lg">{schoolName}</h3>
-                <p className="text-xs text-gray-400">{schoolSubtitle}</p>
+                <h3 className="text-white font-bold text-lg leading-tight">{schoolName}</h3>
+                <p className="text-xs text-primary-400">{schoolSubtitle}</p>
               </div>
+            </Link>
+            <p className="text-sm text-gray-400 leading-relaxed max-w-sm">
+              {motto || 'Terwujudnya generasi Islam yang berakhlak mulia, cerdas, berkarakter, dan berprestasi.'}
+            </p>
+            <div className="pt-2">
+              <Link 
+                to="/pmb" 
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-400 hover:text-primary-300 transition-colors"
+              >
+                <span>Penerimaan Murid Baru (PMB)</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
-            <p className="text-sm text-gray-400 leading-relaxed">{motto || 'Terwujudnya generasi Islam yang berakhlak mulia, cerdas, dan berprestasi.'}</p>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Menu</h4>
-            <ul className="space-y-2">
-              {[{ to: '/', label: 'Beranda' }, { to: '/berita', label: 'Berita' }, { to: '/profil/sejarah', label: 'Profil' }, { to: '/fasilitas', label: 'Sarpras' }, { to: '/pmb', label: 'PMB' }].map((link, i) => (
-                <li key={i}><Link to={link.to} className="text-sm hover:text-primary-400 transition-colors">{link.label}</Link></li>
+          <div className="lg:col-span-2 space-y-3">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Menu Utama</h4>
+            <ul className="space-y-2 text-sm">
+              {[
+                { to: '/', label: 'Beranda' },
+                { to: '/berita', label: 'Warta Madrasah' },
+                { to: '/fasilitas', label: 'Sarana & Prasarana' },
+                { to: '/prestasi', label: 'Prestasi Siswa' },
+                { to: '/alumni', label: 'Jejak Alumni' }
+              ].map((link, i) => (
+                <li key={i}>
+                  <Link to={link.to} className="text-gray-400 hover:text-white transition-colors block py-0.5">
+                    {link.label}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>
 
-          {/* Profil */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Profil</h4>
-            <ul className="space-y-2">
-              {[{ to: '/profil/visi-misi', label: 'Visi & Misi' }, { to: '/profil/guru', label: 'Guru & Staff' }, { to: '/prestasi', label: 'Prestasi' }, { to: '/profil/ekstrakurikuler', label: 'Ekstrakurikuler' }].map((link, i) => (
-                <li key={i}><Link to={link.to} className="text-sm hover:text-primary-400 transition-colors">{link.label}</Link></li>
+          {/* Profil Links */}
+          <div className="lg:col-span-2 space-y-3">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Profil Sekolah</h4>
+            <ul className="space-y-2 text-sm">
+              {[
+                { to: '/profil/sejarah', label: 'Sejarah Singkat' },
+                { to: '/profil/visi-misi', label: 'Visi & Misi' },
+                { to: '/profil/guru', label: 'Dewan Guru & Staff' },
+                { to: '/profil/ekstrakurikuler', label: 'Ekstrakurikuler' },
+                { to: '/profil/program-kerja', label: 'Program Unggulan' },
+              ].map((link, i) => (
+                <li key={i}>
+                  <Link to={link.to} className="text-gray-400 hover:text-white transition-colors block py-0.5">
+                    {link.label}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>
 
           {/* Contact */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Kontak</h4>
+          <div className="sm:col-span-2 lg:col-span-4 space-y-3">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Hubungi Kami</h4>
             <ul className="space-y-3 text-sm text-gray-400">
-              <li className="flex items-start gap-2"> {address || 'Jl. Pendidikan No. 1, Indonesia'}</li>
-              <li className="flex items-start gap-2"> {phone || '(021) 1234-5678'}</li>
-              <li className="flex items-start gap-2"> {email || 'info@mialghazali.sch.id'}</li>
+              <li className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-primary-400 shrink-0 mt-0.5" />
+                <span className="leading-snug">{address || 'Jl. Pendidikan No. 1, Indonesia'}</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-4 h-4 text-primary-400 shrink-0" />
+                <span>{phone || '(021) 1234-5678'}</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="w-4 h-4 text-primary-400 shrink-0" />
+                <span>{email || 'info@mialghazali.sch.id'}</span>
+              </li>
             </ul>
+          </div>
+
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-900 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+          <p>&copy; {new Date().getFullYear()} {schoolName}. Hak Cipta Dilindungi Undang-Undang.</p>
+          <div className="flex items-center gap-4">
+            <Link to="/login" className="hover:text-gray-400 transition-colors">Portal Staf & Guru</Link>
+            <span>•</span>
+            <Link to="/pmb" className="hover:text-primary-400 transition-colors">Info Pendaftaran</Link>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} {schoolName}. All rights reserved.</p>
-          <p className="text-xs text-gray-600">dalam pengembangan</p>
-        </div>
       </div>
     </footer>
   );

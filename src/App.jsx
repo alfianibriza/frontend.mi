@@ -1,9 +1,9 @@
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route, Outlet, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { 
   ClipboardList, Clock, CheckCircle2, XCircle, Building2, Edit, 
   Users, Trash2, Newspaper, GraduationCap, Trophy, Activity, 
-  School, Calendar, Check, X, Plus
+  School, Calendar, Check, X, Plus, Menu, Globe, ExternalLink
 } from 'lucide-react';
 
 // Layout
@@ -52,16 +52,40 @@ const PublicLayout = () => (
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-50/70">
       <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="lg:ml-64">
-        <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center gap-4">
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-lg hover:bg-gray-100">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-          </button>
-          <h2 className="text-sm text-gray-500">Admin Panel</h2>
+      <div className="lg:ml-72 min-h-screen flex flex-col">
+        <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 sm:px-6 py-3.5 flex items-center justify-between shadow-xs">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setSidebarOpen(true)} 
+              className="lg:hidden p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+              aria-label="Buka Menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <h2 className="text-sm font-semibold text-gray-700">Admin Control Panel</h2>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-600 hover:text-primary-600 bg-gray-50 hover:bg-primary-50 px-3.5 py-1.5 rounded-xl border border-gray-200 hover:border-primary-200 transition-all shadow-xs"
+            >
+              <Globe className="w-4 h-4 text-primary-500" />
+              <span className="hidden sm:inline">Lihat Website Publik</span>
+              <span className="sm:hidden">Web</span>
+              <ExternalLink className="w-3 h-3 opacity-60" />
+            </Link>
+          </div>
         </header>
-        <main className="p-6"><Outlet /></main>
+        <main className="p-4 sm:p-6 lg:p-8 flex-1">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

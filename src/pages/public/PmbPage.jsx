@@ -123,7 +123,7 @@ const PmbPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-white rounded-2xl shadow-xl border border-gray-100 p-2 flex gap-2"
+          className="bg-white rounded-2xl shadow-xl border border-gray-100 p-1.5 sm:p-2 grid grid-cols-3 gap-1 sm:gap-2"
         >
           {TABS.map(tab => {
             const Icon = tab.icon;
@@ -132,14 +132,14 @@ const PmbPage = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+                className={`flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-2.5 sm:py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 min-h-[44px] ${
                   isActive
-                    ? `bg-gradient-to-r ${tab.color} text-white shadow-lg scale-[1.02]`
-                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                    ? `bg-gradient-to-r ${tab.color} text-white shadow-md shadow-primary-900/10`
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <Icon className="w-4 h-4" />
-                <span className="hidden sm:inline">{tab.label}</span>
+                <Icon className="w-4 h-4 shrink-0" />
+                <span className="text-center truncate">{tab.label}</span>
               </button>
             );
           })}
@@ -334,63 +334,97 @@ const PmbPage = () => {
                     </p>
                   </div>
 
-                  {/* Students Table */}
+                  {/* Students View: Mobile Cards & Desktop Table */}
                   {filteredStudents.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="bg-gray-50/80">
-                            <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No</th>
-                            <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No. Pendaftaran</th>
-                            <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama Siswa</th>
-                            <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">L/P</th>
-                            <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Asal Sekolah</th>
-                            <th className="px-5 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-50">
-                          {filteredStudents.map((student, i) => (
-                            <motion.tr
-                              key={student.id}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: i * 0.03 }}
-                              className="hover:bg-primary-50/30 transition-colors"
-                            >
-                              <td className="px-5 py-4 text-sm text-gray-400 font-medium">{i + 1}</td>
-                              <td className="px-5 py-4">
-                                <span className="text-sm font-mono bg-gray-100 text-gray-700 px-2.5 py-1 rounded-lg">
-                                  {student.registration_number}
-                                </span>
-                              </td>
-                              <td className="px-5 py-4">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center shrink-0">
-                                    <span className="text-white text-xs font-bold">{student.student_name?.[0]}</span>
-                                  </div>
-                                  <span className="text-sm font-semibold text-gray-800">{student.student_name}</span>
+                    <div>
+                      {/* Mobile Card List */}
+                      <div className="md:hidden divide-y divide-gray-100">
+                        {filteredStudents.map((student, i) => (
+                          <div key={student.id} className="p-4 space-y-2 hover:bg-gray-50/50 transition-colors">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center shrink-0">
+                                  <span className="text-white text-xs font-bold">{student.student_name?.[0]}</span>
                                 </div>
-                              </td>
-                              <td className="px-5 py-4">
-                                <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium ${
-                                  student.gender === 'L' 
-                                    ? 'bg-blue-50 text-blue-700' 
-                                    : 'bg-pink-50 text-pink-700'
-                                }`}>
-                                  {student.gender === 'L' ? 'Laki-laki' : 'Perempuan'}
-                                </span>
-                              </td>
-                              <td className="px-5 py-4 text-sm text-gray-600">{student.previous_school || '-'}</td>
-                              <td className="px-5 py-4 text-center">
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-xs font-semibold">
-                                  <CheckCircle2 className="w-3.5 h-3.5" />
-                                  Diterima
-                                </span>
-                              </td>
-                            </motion.tr>
-                          ))}
-                        </tbody>
-                      </table>
+                                <div>
+                                  <p className="text-sm font-semibold text-gray-900 leading-tight">{student.student_name}</p>
+                                  <span className="text-[11px] font-mono text-gray-500">{student.registration_number}</span>
+                                </div>
+                              </div>
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full text-[11px] font-semibold">
+                                <CheckCircle2 className="w-3 h-3" />
+                                Diterima
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs text-gray-500 pt-1">
+                              <span>Asal: {student.previous_school || '-'}</span>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                                student.gender === 'L' ? 'bg-blue-50 text-blue-700' : 'bg-pink-50 text-pink-700'
+                              }`}>
+                                {student.gender === 'L' ? 'Laki-laki' : 'Perempuan'}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Desktop Table */}
+                      <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="bg-gray-50/80">
+                              <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No</th>
+                              <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No. Pendaftaran</th>
+                              <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama Siswa</th>
+                              <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">L/P</th>
+                              <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Asal Sekolah</th>
+                              <th className="px-5 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-50">
+                            {filteredStudents.map((student, i) => (
+                              <motion.tr
+                                key={student.id}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.03 }}
+                                className="hover:bg-primary-50/30 transition-colors"
+                              >
+                                <td className="px-5 py-4 text-sm text-gray-400 font-medium">{i + 1}</td>
+                                <td className="px-5 py-4">
+                                  <span className="text-sm font-mono bg-gray-100 text-gray-700 px-2.5 py-1 rounded-lg">
+                                    {student.registration_number}
+                                  </span>
+                                </td>
+                                <td className="px-5 py-4">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center shrink-0">
+                                      <span className="text-white text-xs font-bold">{student.student_name?.[0]}</span>
+                                    </div>
+                                    <span className="text-sm font-semibold text-gray-800">{student.student_name}</span>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-4">
+                                  <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium ${
+                                    student.gender === 'L' 
+                                      ? 'bg-blue-50 text-blue-700' 
+                                      : 'bg-pink-50 text-pink-700'
+                                  }`}>
+                                    {student.gender === 'L' ? 'Laki-laki' : 'Perempuan'}
+                                  </span>
+                                </td>
+                                <td className="px-5 py-4 text-sm text-gray-600">{student.previous_school || '-'}</td>
+                                <td className="px-5 py-4 text-center">
+                                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-xs font-semibold">
+                                    <CheckCircle2 className="w-3.5 h-3.5" />
+                                    Diterima
+                                  </span>
+                                </td>
+                              </motion.tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center py-16 px-4">

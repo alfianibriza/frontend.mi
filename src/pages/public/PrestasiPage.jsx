@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
 import { achievementApi } from '../../api';
-import { Trophy, Search, X, Filter, Award, Calendar, MapPin, ChevronRight } from 'lucide-react';
+import { Trophy, Search, X, Filter, Award, Calendar, MapPin, ChevronRight, Medal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
 
 const LEVELS = [
-  { value: '', label: 'Semua', icon: '', color: 'from-primary-500 to-primary-700' },
-  { value: 'Kecamatan', label: 'Kecamatan', icon: '', color: 'from-emerald-500 to-emerald-700' },
-  { value: 'Kabupaten', label: 'Kabupaten', icon: '', color: 'from-blue-500 to-blue-700' },
-  { value: 'Provinsi', label: 'Provinsi', icon: '', color: 'from-purple-500 to-purple-700' },
-  { value: 'Nasional', label: 'Nasional', icon: '', color: 'from-red-500 to-red-700' },
+  { value: '', label: 'Semua', color: 'from-primary-600 to-primary-800' },
+  { value: 'Kecamatan', label: 'Kecamatan', color: 'from-emerald-500 to-emerald-700' },
+  { value: 'Kabupaten', label: 'Kabupaten', color: 'from-blue-500 to-blue-700' },
+  { value: 'Provinsi', label: 'Provinsi', color: 'from-purple-500 to-purple-700' },
+  { value: 'Nasional', label: 'Nasional', color: 'from-rose-500 to-rose-700' },
 ];
 
 const getLevelBadge = (level) => {
   const found = LEVELS.find(l => l.value === level);
-  if (!found) return { icon: '🏆', color: 'from-gray-500 to-gray-700', label: level || 'Lainnya' };
+  if (!found) return { color: 'from-gray-500 to-gray-700', label: level || 'Lainnya' };
   return found;
 };
 
@@ -93,13 +93,13 @@ const PrestasiPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-4 md:gap-6 mt-10"
+            className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 mt-8"
           >
             {LEVELS.filter(l => l.value !== '').map(l => (
-              <div key={l.value} className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl px-5 py-3 text-center min-w-[100px]">
-                <span className="text-2xl block mb-1">{l.icon}</span>
-                <p className="text-2xl font-bold text-white">{levelCounts[l.value] || 0}</p>
-                <p className="text-xs text-white/60">{l.label}</p>
+              <div key={l.value} className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 text-center min-w-[85px] sm:min-w-[100px]">
+                <Medal className="w-5 h-5 text-accent-300 mx-auto mb-1" />
+                <p className="text-xl sm:text-2xl font-bold text-white">{levelCounts[l.value] || 0}</p>
+                <p className="text-[11px] sm:text-xs text-white/70">{l.label}</p>
               </div>
             ))}
           </motion.div>
@@ -112,17 +112,17 @@ const PrestasiPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-white rounded-2xl shadow-xl border border-gray-100 p-5 md:p-6"
+          className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6"
         >
           {/* Search Bar */}
           <div className="relative mb-5">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Cari prestasi berdasarkan judul atau deskripsi..."
-              className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-sm"
+              className="w-full pl-11 pr-11 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-sm"
             />
             {searchInput && (
               <button onClick={() => setSearchInput('')} className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
@@ -132,23 +132,23 @@ const PrestasiPage = () => {
           </div>
 
           {/* Level Filter Tabs */}
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-2">
             <Filter className="w-4 h-4 text-gray-400 shrink-0" />
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider shrink-0">Filter Tingkat:</span>
           </div>
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-2">
             {LEVELS.map(l => (
               <button
                 key={l.value}
                 onClick={() => setActiveLevel(l.value)}
-                className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeLevel === l.value
-                  ? `bg-gradient-to-r ${l.color} text-white shadow-lg shadow-primary-500/20 scale-[1.02]`
+                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 min-h-[40px] ${activeLevel === l.value
+                  ? `bg-gradient-to-r ${l.color} text-white shadow-md shadow-primary-500/20`
                   : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                   }`}
               >
-                <span className="text-base">{l.icon}</span>
+                <Award className="w-3.5 h-3.5" />
                 {l.label}
-                <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeLevel === l.value ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-500'
+                <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-bold ${activeLevel === l.value ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600'
                   }`}>
                   {levelCounts[l.value] || 0}
                 </span>
@@ -195,8 +195,8 @@ const PrestasiPage = () => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                         <div className="absolute bottom-3 left-3">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${badge.color} shadow-lg`}>
-                            <span>{badge.icon}</span> {badge.label}
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${badge.color} shadow-lg`}>
+                            <Trophy className="w-3 h-3" /> {badge.label}
                           </span>
                         </div>
                         {item.year && (
@@ -213,8 +213,8 @@ const PrestasiPage = () => {
                     <div className="p-5">
                       {!item.image && (
                         <div className="flex items-center gap-3 mb-3">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${badge.color}`}>
-                            <span>{badge.icon}</span> {badge.label}
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${badge.color}`}>
+                            <Trophy className="w-3 h-3" /> {badge.label}
                           </span>
                           {item.year && (
                             <span className="inline-flex items-center gap-1 text-xs text-gray-400">
