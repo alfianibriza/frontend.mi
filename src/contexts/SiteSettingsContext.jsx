@@ -139,8 +139,8 @@ export const SiteSettingsProvider = ({ children }) => {
     loadSettings();
   }, []);
 
-  const logoUrl = getFullUrl(logoData.logo_url);
-  const faviconUrl = getFullUrl(logoData.favicon_url || logoData.logo_url);
+  const logoUrl = getFullUrl(logoData.logo_url) || '/favicon.svg';
+  const faviconUrl = getFullUrl(logoData.favicon_url || logoData.logo_url) || '/favicon.svg';
 
   // Prioritas: school_info > logo > default
   const schoolName = schoolInfo.school_name || logoData.school_name || 'MI Al-Ghazali';
@@ -152,7 +152,7 @@ export const SiteSettingsProvider = ({ children }) => {
       faviconUrl,
       schoolName,
       schoolSubtitle,
-      hasLogo: !!logoData.logo_url,
+      hasLogo: true,
       // School info
       address: schoolInfo.address || '',
       phone: schoolInfo.phone || '',

@@ -3,7 +3,7 @@ import { useSiteSettings } from '../../contexts/SiteSettingsContext';
 import { MapPin, Phone, Mail, ArrowUpRight } from 'lucide-react';
 
 const Footer = () => {
-  const { logoUrl, hasLogo, schoolName, schoolSubtitle, address, phone, email, motto } = useSiteSettings();
+  const { logoUrl, schoolName, schoolSubtitle, address, phone, email, motto } = useSiteSettings();
 
   return (
     <footer className="bg-gray-950 text-gray-300 border-t border-gray-900">
@@ -12,14 +12,17 @@ const Footer = () => {
           
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-4 space-y-4">
-            <Link to="/" className="flex items-center gap-3">
-              {hasLogo ? (
-                <img src={logoUrl} alt={schoolName} className="w-10 h-10 rounded-xl object-contain bg-white/10 p-0.5" />
-              ) : (
-                <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
-                  MI
-                </div>
-              )}
+            <Link to="/" className="flex items-center gap-3 group">
+              <img 
+                src={logoUrl || '/favicon.svg'} 
+                alt={schoolName} 
+                className="w-10 h-10 sm:w-11 sm:h-11 object-contain shrink-0 drop-shadow-sm group-hover:scale-105 transition-transform duration-300" 
+                onError={(e) => {
+                  if (e.currentTarget.src !== window.location.origin + '/favicon.svg') {
+                    e.currentTarget.src = '/favicon.svg';
+                  }
+                }}
+              />
               <div>
                 <h3 className="text-white font-bold text-lg leading-tight">{schoolName}</h3>
                 <p className="text-xs text-primary-400">{schoolSubtitle}</p>

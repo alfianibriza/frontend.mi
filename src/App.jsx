@@ -43,7 +43,7 @@ import { newsApi, profileApi, teacherApi, achievementApi, extracurricularApi, fa
 const PublicLayout = () => (
   <>
     <Navbar />
-    <main><Outlet /></main>
+    <main className="pb-24 lg:pb-0 min-h-[calc(100vh-200px)]"><Outlet /></main>
     <Footer />
   </>
 );

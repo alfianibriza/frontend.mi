@@ -25,7 +25,7 @@ import {
 const AdminSidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { logoUrl, hasLogo, schoolName } = useSiteSettings();
+  const { logoUrl, schoolName } = useSiteSettings();
 
   const menuItems = [
     { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -70,13 +70,16 @@ const AdminSidebar = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="p-6 border-b border-white/5">
           <Link to="/" className="flex items-center gap-3 group">
-            {hasLogo ? (
-              <img src={logoUrl} alt={schoolName} className="w-10 h-10 rounded-xl object-contain shadow-lg group-hover:scale-110 transition-transform" />
-            ) : (
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <span className="text-white font-bold text-lg">MI</span>
-              </div>
-            )}
+            <img 
+              src={logoUrl || '/favicon.svg'} 
+              alt={schoolName} 
+              className="w-10 h-10 object-contain drop-shadow-sm group-hover:scale-105 transition-transform shrink-0" 
+              onError={(e) => {
+                if (e.currentTarget.src !== window.location.origin + '/favicon.svg') {
+                  e.currentTarget.src = '/favicon.svg';
+                }
+              }}
+            />
             <div>
               <h2 className="text-white font-bold text-base tracking-tight">{schoolName}</h2>
               <p className="text-[10px] text-primary-400 font-semibold uppercase tracking-widest">Admin Panel</p>
