@@ -198,10 +198,6 @@ const Home = () => {
                 <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-gray-50">
                   <img src={getImageSrc(greetingData.image_url)} alt={greetingData.name} className="w-full aspect-[4/5] object-cover" />
                 </div>
-                <div className="absolute -bottom-6 -right-6 z-20 bg-primary-600 text-white p-8 rounded-[2rem] shadow-2xl hidden md:block">
-                  <p className="text-3xl font-bold mb-1">{greetingData.experience}</p>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary-100">{greetingData.experience_label}</p>
-                </div>
                 <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary-100 rounded-full blur-3xl opacity-60" />
               </motion.div>
 
