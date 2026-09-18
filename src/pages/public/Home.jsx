@@ -201,7 +201,7 @@ const Home = () => {
   return (
     <div className="overflow-x-hidden">
       {/* Hero Slider */}
-      <section className="relative h-[88vh] lg:h-screen min-h-[560px]">
+      <section className="relative h-[80vh] sm:h-[85vh] lg:h-screen min-h-[520px] sm:min-h-[560px]">
         <Swiper
           modules={[Autoplay, Pagination]}
           autoplay={{ delay: 5500, disableOnInteraction: false }}
@@ -282,8 +282,8 @@ const Home = () => {
 
       {/* Stats Section */}
       {homeSettings?.stats?.is_active !== false && (
-        <section className="relative -mt-14 sm:-mt-20 z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <section className="relative -mt-10 sm:-mt-14 lg:-mt-20 z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
             {stats.map((stat, i) => {
               const Icon = ICON_MAP[stat.icon] || GraduationCap;
               return (
@@ -293,13 +293,25 @@ const Home = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-lg shadow-gray-200/40 flex flex-col items-center text-center border border-gray-100 hover:border-primary-200 hover:-translate-y-1 transition-all duration-300 group"
+                  className="relative bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-5 lg:p-6 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_35px_-10px_rgba(16,185,129,0.15)] flex flex-col items-center text-center border border-gray-100 hover:border-emerald-200/80 hover:-translate-y-1.5 transition-all duration-300 group overflow-hidden"
                 >
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 ${stat.color} rounded-xl sm:rounded-2xl flex items-center justify-center text-white mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                  {/* Ambient Hover Glow */}
+                  <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-emerald-500/5 group-hover:bg-emerald-500/10 blur-xl transition-colors duration-500 pointer-events-none" />
+
+                  {/* Icon Badge */}
+                  <div className={`w-11 h-11 sm:w-13 sm:h-13 ${stat.color} rounded-2xl flex items-center justify-center text-white mb-3 sm:mb-3.5 shadow-md shadow-gray-200/80 group-hover:scale-110 group-hover:rotate-2 transition-all duration-300`}>
                     <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-0.5 tracking-tight">{stat.value}</h3>
-                  <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider">{stat.label}</p>
+
+                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-0.5 sm:mb-1 tracking-tight group-hover:text-emerald-700 transition-colors">
+                    {stat.value}
+                  </h3>
+                  <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wider line-clamp-1">
+                    {stat.label}
+                  </p>
+
+                  {/* Subtle Interactive Bottom Accent Bar */}
+                  <div className="w-8 h-1 bg-gray-100 rounded-full mt-2.5 sm:mt-3 group-hover:w-14 group-hover:bg-emerald-500 transition-all duration-300" />
                 </motion.div>
               );
             })}
@@ -399,21 +411,41 @@ const Home = () => {
                     whileInView={{ opacity: 1, y: 0 }} 
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 flex flex-col justify-between group"
+                    className="relative bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-12px_rgba(16,185,129,0.14)] hover:-translate-y-2 transition-all duration-300 border border-gray-100/90 hover:border-emerald-200/80 flex flex-col justify-between group overflow-hidden"
                   >
-                    <div>
-                      <div className={`w-14 h-14 ${prog.bg} ${prog.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
-                        <Icon className="w-7 h-7" />
+                    {/* Top Accent Gradient Line */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-500/0 to-transparent group-hover:via-emerald-500 transition-all duration-500" />
+                    
+                    {/* Corner Aura Glow */}
+                    <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-emerald-500/5 group-hover:bg-emerald-500/10 blur-2xl transition-colors duration-500 pointer-events-none" />
+
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-6">
+                        <div className={`w-14 h-14 sm:w-16 sm:h-16 ${prog.bg} ${prog.color} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-xs ring-1 ring-black/5`}>
+                          <Icon className="w-7 h-7 sm:w-8 sm:h-8" />
+                        </div>
+                        <span className="text-[11px] font-extrabold tracking-widest uppercase px-3 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-400 group-hover:bg-emerald-50 group-hover:text-emerald-700 group-hover:border-emerald-200/60 transition-colors">
+                          0{i + 1}
+                        </span>
                       </div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">{prog.title}</h3>
-                      <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6">{prog.desc}</p>
+
+                      <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 group-hover:text-emerald-800 transition-colors tracking-tight mb-3">
+                        {prog.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6 font-normal">
+                        {prog.desc}
+                      </p>
                     </div>
-                    <Link 
-                      to="/profil/program-kerja" 
-                      className={`inline-flex items-center text-sm font-semibold ${prog.color} hover:underline mt-auto`}
-                    >
-                      Selengkapnya <ChevronRight className="w-4 h-4 ml-1" />
-                    </Link>
+
+                    <div className="relative z-10 pt-4 border-t border-gray-100/70">
+                      <Link 
+                        to="/profil/program-kerja" 
+                        className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-700 group-hover:text-emerald-700 bg-gray-50/80 group-hover:bg-emerald-50 px-4 py-2.5 rounded-xl border border-gray-200/70 group-hover:border-emerald-200 transition-all duration-200 w-fit"
+                      >
+                        <span>Selengkapnya</span>
+                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </div>
                   </motion.div>
                 );
               })}
