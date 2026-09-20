@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet, Link } from 'react-router-dom';
+import { Routes, Route, Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { 
   ClipboardList, Clock, CheckCircle2, XCircle, Building2, Edit, 
@@ -70,8 +70,8 @@ const AdminLayout = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Link
-              to="/"
+            <a
+              href="https://mialghazali.sch.id"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-600 hover:text-primary-600 bg-gray-50 hover:bg-primary-50 px-3.5 py-1.5 rounded-xl border border-gray-200 hover:border-primary-200 transition-all shadow-xs"
@@ -80,7 +80,7 @@ const AdminLayout = () => {
               <span className="hidden sm:inline">Lihat Website Publik</span>
               <span className="sm:hidden">Web</span>
               <ExternalLink className="w-3 h-3 opacity-60" />
-            </Link>
+            </a>
           </div>
         </header>
         <main className="p-4 sm:p-6 lg:p-8 flex-1">
