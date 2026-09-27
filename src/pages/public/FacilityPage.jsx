@@ -39,8 +39,8 @@ const FacilityPage = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         {/* Condition Filter Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 bg-white p-2 rounded-2xl shadow-sm border border-gray-100">
-          <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-8 bg-white p-2 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex items-center overflow-x-auto no-scrollbar sm:flex-wrap gap-1.5 w-full sm:w-auto pb-1 sm:pb-0 scroll-smooth touch-pan-x">
             {[
               { id: 'all', label: 'Semua Fasilitas' },
               { id: 'baik', label: 'Kondisi Baik' },
@@ -49,7 +49,7 @@ const FacilityPage = () => {
               <button
                 key={tab.id}
                 onClick={() => setFilterCondition(tab.id)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all min-h-[40px] ${
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all min-h-[40px] shrink-0 whitespace-nowrap active:scale-95 ${
                   filterCondition === tab.id
                     ? 'bg-primary-600 text-white shadow-sm'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
@@ -59,7 +59,7 @@ const FacilityPage = () => {
               </button>
             ))}
           </div>
-          <p className="text-xs font-medium text-gray-400 px-3">
+          <p className="text-xs font-medium text-gray-400 px-3 shrink-0">
             Total: <span className="text-gray-700 font-bold">{filteredFacilities.length}</span> fasilitas
           </p>
         </div>
