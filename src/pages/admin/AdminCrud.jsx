@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'https://api.mialghazali.sch.id';
 
 /**
  * Modern Generic Admin CRUD Component
@@ -32,7 +32,18 @@ const AdminCrud = ({ title, icon, api, fields, imageField = null }) => {
   const loadData = () => {
     setLoading(true);
     api.getAll({ limit: 100 })
-      .then(res => setItems(res.data.data || []))
+      .then(res => {
+        let data = res.data.data || [];
+        if (data.length > 0 && data.some(d => d.sort_order !== undefined && d.sort_order !== null)) {
+          data = [...data].sort((a, b) => {
+            const orderA = a.sort_order !== null && a.sort_order !== undefined && a.sort_order !== '' ? Number(a.sort_order) : 9999;
+            const orderB = b.sort_order !== null && b.sort_order !== undefined && b.sort_order !== '' ? Number(b.sort_order) : 9999;
+            if (orderA !== orderB) return orderA - orderB;
+            return (a.id || 0) - (b.id || 0);
+          });
+        }
+        setItems(data);
+      })
       .catch((err) => {
         console.error('Failed to load data:', err);
         showToast('Gagal memuat data', 'error');
@@ -68,11 +79,17 @@ const AdminCrud = ({ title, icon, api, fields, imageField = null }) => {
     e.preventDefault();
     setSubmitting(true);
     try {
+      const payload = { ...form };
+      fields.forEach(f => {
+        if (f.type === 'number' && payload[f.name] !== undefined && payload[f.name] !== '') {
+          payload[f.name] = Number(payload[f.name]);
+        }
+      });
       if (editItem) {
-        await api.update(editItem.id, form);
+        await api.update(editItem.id, payload);
         showToast('Data berhasil diperbarui');
       } else {
-        await api.create(form);
+        await api.create(payload);
         showToast('Data baru berhasil ditambahkan');
       }
       setShowForm(false);

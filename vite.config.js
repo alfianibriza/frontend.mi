@@ -8,5 +8,17 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 3000,
     allowedHosts: true,
-  }
+    proxy: {
+      '/api': {
+        target: 'https://api.mialghazali.sch.id',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/uploads': {
+        target: 'https://api.mialghazali.sch.id',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })

@@ -6,7 +6,7 @@ const FacilityPage = () => {
   const [facilities, setFacilities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterCondition, setFilterCondition] = useState('all');
-  const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+  const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'https://api.mialghazali.sch.id';
 
   useEffect(() => {
     facilityApi.getAll({ limit: 50 })

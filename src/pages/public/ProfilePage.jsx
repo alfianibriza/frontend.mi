@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { profileApi, teacherApi, achievementApi, extracurricularApi } from '../../api';
-import { BookOpen, Compass, Target, Sparkles, Users, Trophy, Activity, Calendar, User, FileText } from 'lucide-react';
+import { BookOpen, Compass, Target, Sparkles, Users, Trophy, Activity, Calendar, User, FileText, AlertCircle, RefreshCw } from 'lucide-react';
 
 const sectionMap = {
   'sejarah': { key: 'sejarah', label: 'Sejarah Singkat', icon: BookOpen },
@@ -13,43 +13,61 @@ const sectionMap = {
   'ekstrakurikuler': { key: 'ekskul', label: 'Kegiatan Ekstrakurikuler', icon: Activity },
 };
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'https://api.mialghazali.sch.id';
 
 const ProfilePage = () => {
   const { section } = useParams();
   const [profile, setProfile] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const cfg = sectionMap[section] || { key: section, label: 'Profil Madrasah', icon: FileText };
   const IconComponent = cfg.icon;
 
-  useEffect(() => {
+  const load = async () => {
     setLoading(true);
+    setError(null);
     setProfile(null);
     setItems([]);
-    const load = async () => {
-      try {
-        if (section === 'guru') {
-          const res = await teacherApi.getAll({ limit: 100 });
-          setItems(res.data.data || []);
-        } else if (section === 'prestasi') {
-          const res = await achievementApi.getAll({ limit: 100 });
-          setItems(res.data.data || []);
-        } else if (section === 'ekstrakurikuler') {
-          const res = await extracurricularApi.getAll({ limit: 100 });
-          setItems(res.data.data || []);
-        } else {
-          const res = await profileApi.getByKey(cfg.key);
-          setProfile(res.data.data);
-        }
-      } catch (err) {
-        console.error('Error loading profile data:', err);
-        if (section === 'ekstrakurikuler') {
-          setItems([{ id: 999, name: 'Error Loading Data', description: err.message || 'Unknown error occurred' }]);
-        }
+    try {
+      if (section === 'guru') {
+        const res = await teacherApi.getAll({ limit: 100 });
+        const rawTeachers = res.data.data || [];
+        // Sort sesuai urutan yang di-setting (sort_order ascending)
+        const sortedTeachers = [...rawTeachers].sort((a, b) => {
+          const orderA = a.sort_order !== null && a.sort_order !== undefined && a.sort_order !== '' ? Number(a.sort_order) : 9999;
+          const orderB = b.sort_order !== null && b.sort_order !== undefined && b.sort_order !== '' ? Number(b.sort_order) : 9999;
+          if (orderA !== orderB) return orderA - orderB;
+          return (a.id || 0) - (b.id || 0);
+        });
+        setItems(sortedTeachers);
+      } else if (section === 'prestasi') {
+        const res = await achievementApi.getAll({ limit: 100 });
+        const rawAchievements = res.data.data || [];
+        const sortedAchievements = [...rawAchievements].sort((a, b) => {
+          if (a.sort_order !== undefined && b.sort_order !== undefined && a.sort_order !== null && b.sort_order !== null) {
+            const diff = Number(a.sort_order) - Number(b.sort_order);
+            if (diff !== 0) return diff;
+          }
+          return (b.year || 0) - (a.year || 0);
+        });
+        setItems(sortedAchievements);
+      } else if (section === 'ekstrakurikuler') {
+        const res = await extracurricularApi.getAll({ limit: 100 });
+        setItems(res.data.data || []);
+      } else {
+        const res = await profileApi.getByKey(cfg.key);
+        setProfile(res.data.data);
       }
+    } catch (err) {
+      console.error('Error loading profile data:', err);
+      setError(err?.response?.data?.message || err.message || 'Gagal memuat data profil');
+    } finally {
       setLoading(false);
-    };
+    }
+  };
+
+  useEffect(() => {
     load();
   }, [section]);
 
@@ -222,6 +240,21 @@ const ProfilePage = () => {
                 dangerouslySetInnerHTML={{ __html: profile.content || '<p>Konten belum tersedia.</p>' }} 
               />
             </div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-16 bg-white rounded-3xl border border-red-100 shadow-sm max-w-md mx-auto p-8">
+            <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-3">
+              <AlertCircle className="w-6 h-6" />
+            </div>
+            <h3 className="text-gray-900 font-bold text-lg mb-1">Gagal Memuat Data</h3>
+            <p className="text-gray-500 text-sm mb-5 leading-relaxed">{error}</p>
+            <button 
+              onClick={() => { setError(null); load(); }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold text-sm shadow-md shadow-primary-600/20 transition-all active:scale-95 cursor-pointer"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Coba Lagi</span>
+            </button>
           </div>
         ) : (
           <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200 max-w-md mx-auto">

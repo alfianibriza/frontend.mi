@@ -128,7 +128,7 @@ const Home = () => {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
 
-  const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || (import.meta.env.PROD ? 'https://api.mialghazali.sch.id' : 'http://localhost:5000');
+  const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || 'https://api.mialghazali.sch.id';
 
   useEffect(() => {
     newsApi.getAll({ limit: 3 }).then(res => setLatestNews(res.data.data)).catch(() => { });

@@ -20,9 +20,11 @@
 
 import axios from 'axios';
 
-// Konfigurasi dinamis: Production = API Hostinger, Development = localhost API
-const isProd = import.meta.env.PROD;
-const API_URL = import.meta.env.VITE_API_URL || (isProd ? 'https://api.mialghazali.sch.id/api' : 'http://localhost:5000/api');
+// Konfigurasi dinamis:
+// Jika VITE_API_URL diset, gunakan nilai tersebut.
+// Jika di development, gunakan '/api' (diproxy oleh Vite ke https://api.mialghazali.sch.id sehingga terhindar dari CORS dan koneksi localhost yang mati).
+// Jika di production, default ke https://api.mialghazali.sch.id/api
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api' : 'https://api.mialghazali.sch.id/api');
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
